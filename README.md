@@ -10,3 +10,7 @@ LOGIN TO ADMINER:
 - user: `root`
 - password: `${MYSQL_ROOT_PASSWORD}`
 - database: `${MYSQL_DATABASE_NAME}`
+
+Launching php-cs-fixer:
+`cp .php_cs.dist .php_cs`
+`./bin/php-cs-fixer fix ./src/ --config=.php_cs`
