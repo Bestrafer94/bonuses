@@ -1,5 +1,6 @@
 imports:
     - { resource: repositories.yaml }
+    - { resource: factory.yaml }
 
 parameters:
     locale: 'en'
