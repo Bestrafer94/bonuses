@@ -1,6 +1,7 @@
 imports:
     - { resource: repositories.yaml }
     - { resource: factory.yaml }
+    - { resource: fixtures.yaml }
 
 parameters:
     locale: 'en'

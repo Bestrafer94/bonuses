@@ -1,0 +1,3 @@
+services:
+    App\DataFixtures\UserData:
+        arguments: [App\Factory\UserFactory]
