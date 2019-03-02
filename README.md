@@ -12,5 +12,9 @@ LOGIN TO ADMINER:
 - database: `${MYSQL_DATABASE_NAME}`
 
 Launching php-cs-fixer:
-`cp .php_cs.dist .php_cs`
-`./bin/php-cs-fixer fix ./src/ --config=.php_cs`
+- `cp .php_cs.dist .php_cs`
+- `./bin/php-cs-fixer fix ./src/ --config=.php_cs`
+
+Launching tests:
+- `cp phpunit.xml.dist phpunit.xml`
+- `bin/phpunit --configuration phpunit.xml tests/ --stop-on-failure`
