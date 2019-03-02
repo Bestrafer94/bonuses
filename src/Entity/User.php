@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -41,6 +42,30 @@ class User implements UserInterface
      * @ORM\JoinColumn(name="profile_id", referencedColumnName="id")
      */
     private $profile;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\RealMoneyWallet", cascade={"remove"})
+     * @ORM\JoinColumn(name="real_money_wallet_id", referencedColumnName="id")
+     *
+     * @var RealMoneyWallet
+     */
+    private $realMoneyWallet;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\BonusMoneyWallet")
+     * @ORM\JoinTable(name="users_bonus_money_wallets",
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="bonus_money_wallets_id", referencedColumnName="id", unique=true)}
+     * )
+     *
+     * @var ArrayCollection
+     */
+    private $bonusMoneyWallets;
+
+    public function __construct()
+    {
+        $this->bonusMoneyWallets = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -106,6 +131,46 @@ class User implements UserInterface
     public function setProfile(UserProfile $profile): User
     {
         $this->profile = $profile;
+
+        return $this;
+    }
+
+    /**
+     * @return RealMoneyWallet
+     */
+    public function getRealMoneyWallet(): RealMoneyWallet
+    {
+        return $this->realMoneyWallet;
+    }
+
+    /**
+     * @param RealMoneyWallet $realMoneyWallet
+     *
+     * @return User
+     */
+    public function setRealMoneyWallet(RealMoneyWallet $realMoneyWallet): User
+    {
+        $this->realMoneyWallet = $realMoneyWallet;
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getBonusMoneyWallets(): ArrayCollection
+    {
+        return $this->bonusMoneyWallets;
+    }
+
+    /**
+     * @param BonusMoneyWallet $bonusMoneyWallets
+     *
+     * @return User
+     */
+    public function addBonusMoneyWallet(BonusMoneyWallet $bonusMoneyWallets): User
+    {
+        $this->bonusMoneyWallets[] = $bonusMoneyWallets;
 
         return $this;
     }
