@@ -2,3 +2,7 @@ services:
     App\Repository\UserRepository:
         factory: ['@Doctrine\ORM\EntityManagerInterface', getRepository]
         arguments: [App\Entity\User]
+
+    App\Repository\UserProfileRepository:
+        factory: ['@Doctrine\ORM\EntityManagerInterface', getRepository]
+        arguments: [App\Entity\UserProfile]
