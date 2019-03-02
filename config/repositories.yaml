@@ -1,0 +1,4 @@
+services:
+    App\Repository\UserRepository:
+        factory: ['@Doctrine\ORM\EntityManagerInterface', getRepository]
+        arguments: [App\Entity\User]
