@@ -1,2 +1,4 @@
 services:
     App\Factory\UserFactory:
+
+    App\Factory\UserProfileFactory:
