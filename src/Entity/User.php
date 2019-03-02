@@ -37,6 +37,12 @@ class User implements UserInterface
     private $password;
 
     /**
+     * @ORM\OneToOne(targetEntity="App\Entity\UserProfile", cascade={"remove"})
+     * @ORM\JoinColumn(name="profile_id", referencedColumnName="id")
+     */
+    private $profile;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -80,6 +86,26 @@ class User implements UserInterface
     public function setPassword(string $password): User
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @return UserProfile
+     */
+    public function getProfile(): UserProfile
+    {
+        return $this->profile;
+    }
+
+    /**
+     * @param UserProfile $profile
+     *
+     * @return User
+     */
+    public function setProfile(UserProfile $profile): User
+    {
+        $this->profile = $profile;
 
         return $this;
     }
