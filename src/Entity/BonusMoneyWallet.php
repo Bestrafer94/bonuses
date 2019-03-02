@@ -29,6 +29,14 @@ class BonusMoneyWallet extends Wallet
     private $status;
 
     /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Bonus", cascade={"remove"})
+     * @ORM\JoinColumn(name="bonus_id", referencedColumnName="id")
+     *
+     * @var Bonus
+     */
+    private $bonus;
+
+    /**
      * @return string
      */
     public function getStatus(): string
@@ -44,6 +52,26 @@ class BonusMoneyWallet extends Wallet
     public function setStatus(string $status): BonusMoneyWallet
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return Bonus
+     */
+    public function getBonus(): Bonus
+    {
+        return $this->bonus;
+    }
+
+    /**
+     * @param Bonus $bonus
+     *
+     * @return BonusMoneyWallet
+     */
+    public function setBonus(Bonus $bonus): BonusMoneyWallet
+    {
+        $this->bonus = $bonus;
 
         return $this;
     }
