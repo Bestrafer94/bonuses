@@ -1,6 +1,0 @@
-services:
-    App\DataFixtures\UserData:
-        arguments: [App\Factory\UserFactory]
-
-    App\DataFixtures\UserProfileDatar:
-        arguments: [App\Factory\UserProfileData]
