@@ -9,6 +9,16 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class UserProfile
 {
+    const MALE_GENDER = 'male';
+    const FEMALE_GENDER = 'female';
+    const UNSPECIFIED_GENDER = 'unspecified';
+
+    const GENDERS = [
+        self::MALE_GENDER,
+        self::FEMALE_GENDER,
+        self::UNSPECIFIED_GENDER,
+    ];
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
