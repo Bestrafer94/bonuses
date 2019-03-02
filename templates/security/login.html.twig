@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Login page</h1>
+
+    <a href="{{ path('logout') }}">Logout</a>
+    {% if error %}
+        <span>{{ error.messageKey }}</span>
+    {% endif %}
+
+    <form action="{{ path('login') }}" method="POST">
+        <input type="text" name="_username" value="{{ last_username }}" />
+        <input type="password" name="_password" />
+        <button type="submit">Login</button>
+    </form>
+
+{% endblock %}

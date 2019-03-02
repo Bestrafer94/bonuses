@@ -4,16 +4,32 @@ namespace App\Factory;
 
 use App\Entity\User;
 use App\Model\UserModelInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserFactory implements UserFactoryInterface
 {
+    /**
+     * @var UserPasswordEncoderInterface
+     */
+    private $encoder;
+
+    /**
+     * @param UserPasswordEncoderInterface $encoder
+     */
+    public function __construct(UserPasswordEncoderInterface $encoder)
+    {
+        $this->encoder = $encoder;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function createUser(UserModelInterface $userModel): User
     {
-        return (new User())
+        $user = new User();
+
+        return $user
             ->setUsername($userModel->getUsername())
-            ->setPassword($userModel->getPassword());
+            ->setPassword($this->encoder->encodePassword($user, $userModel->getPassword()));
     }
 }

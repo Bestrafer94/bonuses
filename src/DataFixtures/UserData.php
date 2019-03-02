@@ -8,7 +8,6 @@ use App\Repository\UserProfileRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Common\Persistence\ObjectRepository;
 
 class UserData extends Fixture implements OrderedFixtureInterface
 {
@@ -20,7 +19,7 @@ class UserData extends Fixture implements OrderedFixtureInterface
     private $userFactory;
 
     /**
-     * @var ObjectRepository
+     * @var UserProfileRepository
      */
     private $userProfileRepository;
 
