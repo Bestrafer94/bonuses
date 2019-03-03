@@ -7,8 +7,24 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\BonusRepository")
  */
-abstract class Bonus
+class Bonus
 {
+    const LOGIN_TRIGGER = 'onLogin';
+    const DEPOSIT_TRIGGER = 'onDeposit';
+
+    const DEPOSIT_BONUS_NAME = 'Deposit bonus';
+    const LOGIN_BONUS_NAME = 'First login bonus';
+
+    const TRIGGERS = [
+        self::LOGIN_TRIGGER,
+        self::DEPOSIT_TRIGGER,
+    ];
+
+    const BONUS_NAMES = [
+        self::LOGIN_BONUS_NAME,
+        self::DEPOSIT_BONUS_NAME,
+    ];
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -38,6 +54,21 @@ abstract class Bonus
      * @var int
      */
     private $valueOfReward;
+
+    /**
+     * @ORM\Column(type="string", length=100)
+     *
+     * @var string
+     */
+    private $eventTrigger;
+
+    /**
+     * @ORM\OneToOne(targetEntity="BonusMoneyWallet", inversedBy="bonus")
+     * @ORM\JoinColumn(name="wallet_id", referencedColumnName="id")
+     *
+     * @var BonusMoneyWallet
+     */
+    private $wallet;
 
     /**
      * @return int
@@ -122,5 +153,40 @@ abstract class Bonus
     /**
      * @return string
      */
-    abstract public function getTrigger(): string;
+    public function getEventTrigger(): string
+    {
+        return $this->eventTrigger;
+    }
+
+    /**
+     * @param string $eventTrigger
+     *
+     * @return Bonus
+     */
+    public function setEventTrigger(string $eventTrigger): Bonus
+    {
+        $this->eventTrigger = $eventTrigger;
+
+        return $this;
+    }
+
+    /**
+     * @return BonusMoneyWallet
+     */
+    public function getWallet(): BonusMoneyWallet
+    {
+        return $this->wallet;
+    }
+
+    /**
+     * @param BonusMoneyWallet $wallet
+     *
+     * @return Bonus
+     */
+    public function setWallet(BonusMoneyWallet $wallet): Bonus
+    {
+        $this->wallet = $wallet;
+
+        return $this;
+    }
 }

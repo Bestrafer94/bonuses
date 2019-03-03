@@ -36,8 +36,7 @@ class BonusMoneyWallet extends Wallet
     protected $initialValue = 0;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Bonus", cascade={"remove"})
-     * @ORM\JoinColumn(name="bonus_id", referencedColumnName="id")
+     * @ORM\OneToOne(targetEntity="Bonus", mappedBy="wallet", cascade={"persist"})
      *
      * @var Bonus
      */
@@ -79,6 +78,7 @@ class BonusMoneyWallet extends Wallet
     public function setBonus(Bonus $bonus): BonusMoneyWallet
     {
         $this->bonus = $bonus;
+        $bonus->setWallet($this);
 
         return $this;
     }

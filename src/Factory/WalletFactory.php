@@ -2,13 +2,14 @@
 
 namespace App\Factory;
 
+use App\Entity\Bonus;
 use App\Entity\BonusMoneyWallet;
 use App\Entity\RealMoneyWallet;
 
 class WalletFactory implements WalletFactoryInterface
 {
     /**
-     * @return RealMoneyWallet
+     * {@inheritdoc}
      */
     public function createRealMoneyWallet(): RealMoneyWallet
     {
@@ -16,10 +17,18 @@ class WalletFactory implements WalletFactoryInterface
     }
 
     /**
-     * @return BonusMoneyWallet
+     * {@inheritdoc}
      */
-    public function createBonusMoneyWallet(): BonusMoneyWallet
+    public function createBonusMoneyWallet(Bonus $bonus): BonusMoneyWallet
     {
-        return new BonusMoneyWallet();
+        $valueOfReward = $bonus->getValueOfReward();
+
+        $wallet = new BonusMoneyWallet();
+        $wallet->setBonus($bonus);
+        $wallet->setCurrentValue($valueOfReward);
+        $wallet->setInitialValue($valueOfReward);
+        $wallet->setStatus(BonusMoneyWallet::STATUS_ACTIVE);
+
+        return $wallet;
     }
 }
