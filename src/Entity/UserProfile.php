@@ -57,6 +57,14 @@ class UserProfile
     private $gender;
 
     /**
+     * @ORM\OneToOne(targetEntity="App\Entity\User", cascade={"persist"})
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *
+     * @var User
+     */
+    private $user;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -140,6 +148,26 @@ class UserProfile
     public function setGender(string $gender): UserProfile
     {
         $this->gender = $gender;
+
+        return $this;
+    }
+
+    /**
+     * @return User
+     */
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return UserProfile
+     */
+    public function setUser(User $user): UserProfile
+    {
+        $this->user = $user;
 
         return $this;
     }

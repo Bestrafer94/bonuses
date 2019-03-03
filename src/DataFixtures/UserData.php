@@ -4,7 +4,6 @@ namespace App\DataFixtures;
 
 use App\Factory\UserFactoryInterface;
 use App\Model\UserModel;
-use App\Repository\UserProfileRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -19,18 +18,11 @@ class UserData extends Fixture implements OrderedFixtureInterface
     private $userFactory;
 
     /**
-     * @var UserProfileRepository
+     * @param UserFactoryInterface $userFactory
      */
-    private $userProfileRepository;
-
-    /**
-     * @param UserFactoryInterface  $userFactory
-     * @param UserProfileRepository $userProfileRepository
-     */
-    public function __construct(UserFactoryInterface $userFactory, UserProfileRepository $userProfileRepository)
+    public function __construct(UserFactoryInterface $userFactory)
     {
         $this->userFactory = $userFactory;
-        $this->userProfileRepository = $userProfileRepository;
     }
 
     /**
@@ -38,17 +30,12 @@ class UserData extends Fixture implements OrderedFixtureInterface
      */
     public function load(ObjectManager $manager)
     {
-        $userProfiles = $this->userProfileRepository->findAll();
-
         for ($i = 0; $i < self::NUMBER_OF_USERS; ++$i) {
             $createUserModel = (new UserModel())
                 ->setUserName(sprintf('user-%s', $i))
                 ->setPassword(sprintf('password-%s', $i));
 
-            $user = $this->userFactory->createUser($createUserModel)
-                ->setProfile($userProfiles[$i]);
-
-            $manager->persist($user);
+            $manager->persist($this->userFactory->createUser($createUserModel));
         }
 
         $manager->flush();
@@ -59,6 +46,6 @@ class UserData extends Fixture implements OrderedFixtureInterface
      */
     public function getOrder(): int
     {
-        return 1;
+        return 0;
     }
 }

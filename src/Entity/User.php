@@ -39,12 +39,6 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\UserProfile", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="profile_id", referencedColumnName="id")
-     */
-    private $profile;
-
-    /**
      * @ORM\ManyToMany(targetEntity="App\Entity\BonusMoneyWallet")
      * @ORM\JoinTable(name="users_bonus_money_wallets",
      *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
@@ -104,26 +98,6 @@ class User implements UserInterface
     public function setPassword(string $password): User
     {
         $this->password = $password;
-
-        return $this;
-    }
-
-    /**
-     * @return UserProfile
-     */
-    public function getProfile(): UserProfile
-    {
-        return $this->profile;
-    }
-
-    /**
-     * @param UserProfile $profile
-     *
-     * @return User
-     */
-    public function setProfile(UserProfile $profile): User
-    {
-        $this->profile = $profile;
 
         return $this;
     }

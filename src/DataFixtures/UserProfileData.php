@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\UserProfile;
 use App\Factory\UserProfileFactoryInterface;
 use App\Model\UserProfileModel;
+use App\Repository\UserRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -17,11 +18,18 @@ class UserProfileData extends Fixture implements OrderedFixtureInterface
     private $userProfileFactory;
 
     /**
-     * @param UserProfileFactoryInterface $userProfileFactory
+     * @var UserRepository
      */
-    public function __construct(UserProfileFactoryInterface $userProfileFactory)
+    private $userRepository;
+
+    /**
+     * @param UserProfileFactoryInterface $userProfileFactory
+     * @param UserRepository              $userRepository
+     */
+    public function __construct(UserProfileFactoryInterface $userProfileFactory, UserRepository $userRepository)
     {
         $this->userProfileFactory = $userProfileFactory;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -30,6 +38,7 @@ class UserProfileData extends Fixture implements OrderedFixtureInterface
     public function load(ObjectManager $manager)
     {
         $genders = UserProfile::GENDERS;
+        $users = $this->userRepository->findAll();
 
         for ($i = 0; $i < UserData::NUMBER_OF_USERS; ++$i) {
             $createUserModel = (new UserProfileModel())
@@ -38,8 +47,9 @@ class UserProfileData extends Fixture implements OrderedFixtureInterface
                 ->setGender($genders[rand(0, count($genders) - 1)])
                 ->setAge(rand(18, 100));
 
-            $user = $this->userProfileFactory->createUserProfile($createUserModel);
-            $manager->persist($user);
+            $userProfile = $this->userProfileFactory->createUserProfile($createUserModel);
+            $userProfile->setUser($users[$i]);
+            $manager->persist($userProfile);
         }
 
         $manager->flush();
@@ -50,6 +60,6 @@ class UserProfileData extends Fixture implements OrderedFixtureInterface
      */
     public function getOrder(): int
     {
-        return 0;
+        return 2;
     }
 }

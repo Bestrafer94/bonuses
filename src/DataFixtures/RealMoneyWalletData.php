@@ -51,6 +51,6 @@ class RealMoneyWalletData extends Fixture implements OrderedFixtureInterface
      */
     public function getOrder(): int
     {
-        return 2;
+        return 1;
     }
 }
