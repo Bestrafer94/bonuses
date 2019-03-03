@@ -13,3 +13,7 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
+
+    App\Handler\DepositCommandHandler:
+        tags:
+            - { name: tactician.handler, command: App\Handler\Command\DepositCommand }

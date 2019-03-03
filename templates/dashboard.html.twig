@@ -5,4 +5,11 @@
 
     <h1>Welcome in application!</h1>
 
+    Deposit:
+    {{ form_start(depositForm) }}
+        {{ form_widget(depositForm) }}
+
+        <input type="submit" class="btn" value="Deposit" />
+    {{ form_end(depositForm) }}
+
 {% endblock %}
