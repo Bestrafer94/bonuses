@@ -8,7 +8,7 @@ use App\Factory\UserProfileFactoryInterface;
 use App\Model\UserProfileModerInterface;
 use PHPUnit\Framework\TestCase;
 
-class UserProfileFactoryTests extends TestCase
+class UserProfileFactoryTest extends TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject|UserProfileModerInterface
