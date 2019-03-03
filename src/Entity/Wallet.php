@@ -32,6 +32,12 @@ abstract class Wallet
      */
     protected $currentValue;
 
+    public function __construct()
+    {
+        $this->initialValue = 0;
+        $this->currentValue = 0;
+    }
+
     /**
      * @return int
      */

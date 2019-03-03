@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Factory\UserFactoryInterface;
 use App\Model\UserModel;
+use App\Repository\RealMoneyWalletRepository;
 use App\Repository\UserProfileRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -24,13 +25,23 @@ class UserData extends Fixture implements OrderedFixtureInterface
     private $userProfileRepository;
 
     /**
-     * @param UserFactoryInterface  $userFactory
-     * @param UserProfileRepository $userProfileRepository
+     * @var RealMoneyWalletRepository
      */
-    public function __construct(UserFactoryInterface $userFactory, UserProfileRepository $userProfileRepository)
-    {
+    private $realMoneyWalletRepository;
+
+    /**
+     * @param UserFactoryInterface      $userFactory
+     * @param UserProfileRepository     $userProfileRepository
+     * @param RealMoneyWalletRepository $realMoneyWalletRepository
+     */
+    public function __construct(
+        UserFactoryInterface $userFactory,
+        UserProfileRepository $userProfileRepository,
+        RealMoneyWalletRepository $realMoneyWalletRepository
+    ) {
         $this->userFactory = $userFactory;
         $this->userProfileRepository = $userProfileRepository;
+        $this->realMoneyWalletRepository = $realMoneyWalletRepository;
     }
 
     /**
@@ -39,6 +50,7 @@ class UserData extends Fixture implements OrderedFixtureInterface
     public function load(ObjectManager $manager)
     {
         $userProfiles = $this->userProfileRepository->findAll();
+        $realMoneyWallets = $this->realMoneyWalletRepository->findAll();
 
         for ($i = 0; $i < self::NUMBER_OF_USERS; ++$i) {
             $createUserModel = (new UserModel())
@@ -46,7 +58,8 @@ class UserData extends Fixture implements OrderedFixtureInterface
                 ->setPassword(sprintf('password-%s', $i));
 
             $user = $this->userFactory->createUser($createUserModel)
-                ->setProfile($userProfiles[$i]);
+                ->setProfile($userProfiles[$i])
+                ->setRealMoneyWallet($realMoneyWallets[$i]);
 
             $manager->persist($user);
         }
