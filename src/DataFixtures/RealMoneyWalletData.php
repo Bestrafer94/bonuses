@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Factory\WalletFactoryInterface;
+use App\Repository\UserRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -15,11 +16,18 @@ class RealMoneyWalletData extends Fixture implements OrderedFixtureInterface
     private $walletFactory;
 
     /**
-     * @param WalletFactoryInterface $walletFactory
+     * @var UserRepository
      */
-    public function __construct(WalletFactoryInterface $walletFactory)
+    private $userRepository;
+
+    /**
+     * @param WalletFactoryInterface $walletFactory
+     * @param UserRepository         $userRepository
+     */
+    public function __construct(WalletFactoryInterface $walletFactory, UserRepository $userRepository)
     {
         $this->walletFactory = $walletFactory;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -27,8 +35,11 @@ class RealMoneyWalletData extends Fixture implements OrderedFixtureInterface
      */
     public function load(ObjectManager $manager)
     {
+        $users = $this->userRepository->findAll();
+
         for ($i = 0; $i < UserData::NUMBER_OF_USERS; ++$i) {
             $realMoneyWallet = $this->walletFactory->createRealMoneyWallet();
+            $realMoneyWallet->setUser($users[$i]);
             $manager->persist($realMoneyWallet);
         }
 
@@ -40,6 +51,6 @@ class RealMoneyWalletData extends Fixture implements OrderedFixtureInterface
      */
     public function getOrder(): int
     {
-        return 0;
+        return 2;
     }
 }

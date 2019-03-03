@@ -2,22 +2,33 @@
 
 namespace App\Handler;
 
+use App\ChainOfResponsibility\MoneyAllocating\BonusMoneyAllocatingHandler;
+use App\ChainOfResponsibility\MoneyAllocating\RealMoneyAllocatingHandler;
 use App\Handler\Command\DepositCommand;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class DepositCommandHandler
 {
     /**
-     * @var EventDispatcherInterface
+     * @var BonusMoneyAllocatingHandler
      */
-    protected $dispatcher;
+    private $bonusMoneyAllocatingHandler;
 
     /**
-     * @param EventDispatcherInterface $dispatcher
+     * @var RealMoneyAllocatingHandler
      */
-    public function __construct(EventDispatcherInterface $dispatcher)
-    {
-        $this->dispatcher = $dispatcher;
+    private $realMoneyAllocatingHandler;
+
+    /**
+     * @param BonusMoneyAllocatingHandler $bonusMoneyAllocatingHandler
+     * @param RealMoneyAllocatingHandler  $realMoneyAllocatingHandler
+     */
+    public function __construct(
+        BonusMoneyAllocatingHandler $bonusMoneyAllocatingHandler,
+        RealMoneyAllocatingHandler $realMoneyAllocatingHandler
+    ) {
+        $this->bonusMoneyAllocatingHandler = $bonusMoneyAllocatingHandler;
+        $this->realMoneyAllocatingHandler = $realMoneyAllocatingHandler;
     }
 
     /**
@@ -28,7 +39,25 @@ class DepositCommandHandler
         $user = $command->getUser();
         $depositValue = $command->getDepositValue();
 
-        //add bonus
-        //allocate money
+        $this->allocateMoney($user, $depositValue);
+        $this->addBonus($user, $depositValue);
+    }
+
+    /**
+     * @param UserInterface $user
+     * @param int           $depositValue
+     */
+    private function allocateMoney(UserInterface $user, int $depositValue)
+    {
+        $this->bonusMoneyAllocatingHandler->setNext($this->realMoneyAllocatingHandler);
+        $this->bonusMoneyAllocatingHandler->handle($user, $depositValue);
+    }
+
+    /**
+     * @param UserInterface $user
+     * @param int           $depositValue
+     */
+    private function addBonus(UserInterface $user, int $depositValue)
+    {
     }
 }

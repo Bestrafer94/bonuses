@@ -23,20 +23,7 @@ abstract class Wallet
      *
      * @var int
      */
-    protected $initialValue;
-
-    /**
-     * @ORM\Column(type="integer")
-     *
-     * @var int
-     */
-    protected $currentValue;
-
-    public function __construct()
-    {
-        $this->initialValue = 0;
-        $this->currentValue = 0;
-    }
+    protected $currentValue = 0;
 
     /**
      * @return int
@@ -61,26 +48,6 @@ abstract class Wallet
     /**
      * @return int
      */
-    public function getInitialValue(): int
-    {
-        return $this->initialValue;
-    }
-
-    /**
-     * @param int $initialValue
-     *
-     * @return Wallet
-     */
-    public function setInitialValue(int $initialValue): Wallet
-    {
-        $this->initialValue = $initialValue;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
     public function getCurrentValue(): int
     {
         return $this->currentValue;
@@ -94,6 +61,18 @@ abstract class Wallet
     public function setCurrentValue(int $currentValue): Wallet
     {
         $this->currentValue = $currentValue;
+
+        return $this;
+    }
+
+    /**
+     * @param int $depositMoney
+     *
+     * @return Wallet
+     */
+    public function addDepositMoney(int $depositMoney): Wallet
+    {
+        $this->currentValue += $depositMoney;
 
         return $this;
     }

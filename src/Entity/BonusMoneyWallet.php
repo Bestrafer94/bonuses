@@ -29,6 +29,13 @@ class BonusMoneyWallet extends Wallet
     private $status;
 
     /**
+     * @ORM\Column(type="integer")
+     *
+     * @var int
+     */
+    protected $initialValue = 0;
+
+    /**
      * @ORM\OneToOne(targetEntity="App\Entity\Bonus", cascade={"remove"})
      * @ORM\JoinColumn(name="bonus_id", referencedColumnName="id")
      *
@@ -72,6 +79,26 @@ class BonusMoneyWallet extends Wallet
     public function setBonus(Bonus $bonus): BonusMoneyWallet
     {
         $this->bonus = $bonus;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getInitialValue(): int
+    {
+        return $this->initialValue;
+    }
+
+    /**
+     * @param int $initialValue
+     *
+     * @return BonusMoneyWallet
+     */
+    public function setInitialValue(int $initialValue): BonusMoneyWallet
+    {
+        $this->initialValue = $initialValue;
 
         return $this;
     }

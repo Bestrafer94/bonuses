@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\PersistentCollection;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -38,18 +39,10 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\UserProfile", cascade={"remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\UserProfile", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="profile_id", referencedColumnName="id")
      */
     private $profile;
-
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\RealMoneyWallet", cascade={"remove"})
-     * @ORM\JoinColumn(name="real_money_wallet_id", referencedColumnName="id")
-     *
-     * @var RealMoneyWallet
-     */
-    private $realMoneyWallet;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\BonusMoneyWallet")
@@ -136,29 +129,9 @@ class User implements UserInterface
     }
 
     /**
-     * @return RealMoneyWallet
+     * @return ArrayCollection|PersistentCollection
      */
-    public function getRealMoneyWallet(): RealMoneyWallet
-    {
-        return $this->realMoneyWallet;
-    }
-
-    /**
-     * @param RealMoneyWallet $realMoneyWallet
-     *
-     * @return User
-     */
-    public function setRealMoneyWallet(RealMoneyWallet $realMoneyWallet): User
-    {
-        $this->realMoneyWallet = $realMoneyWallet;
-
-        return $this;
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getBonusMoneyWallets(): ArrayCollection
+    public function getBonusMoneyWallets()
     {
         return $this->bonusMoneyWallets;
     }

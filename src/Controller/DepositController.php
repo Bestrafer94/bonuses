@@ -36,9 +36,9 @@ class DepositController extends AbstractController
         $form = $this->createForm(DepositType::class, new DepositData());
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $command = new DepositCommand($form->getData(), $this->getUser());
-            $response = $this->commandBus->handle($command);
+            $this->commandBus->handle($command);
         }
 
         return $this->render('dashboard.html.twig', [
