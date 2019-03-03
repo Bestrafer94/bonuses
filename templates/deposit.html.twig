@@ -1,0 +1,13 @@
+{% block body %}
+    {% include 'base.html.twig' %}
+
+    <h1>Deposit:</h1>
+    <div class="centered_form">
+        {{ form_start(depositForm) }}
+        {{ form_widget(depositForm) }}
+
+        <input type="submit" class="btn" value="Deposit" />
+        {{ form_end(depositForm) }}
+    </div>
+
+{% endblock %}

@@ -6,7 +6,20 @@
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        {% block body %}
+
+            <style>
+                h1 {text-align: center}
+                .menu {	display: inline-flex; list-style: none; margin: 6%; float: left; font-size: 20px; text-transform: uppercase;}
+                .centered_form {text-align: center}
+            </style>
+            <li class="menu"><a href="{{ path('logout') }}">Logout</a></li>
+            <li class="menu"><a href="{{ path('bet') }}">Bet</a></li>
+            <li class="menu"><a href="{{ path('balance') }}">Balance</a></li>
+            <li class="menu"><a href="{{ path('user_profile') }}">User Profile</a></li>
+            <li class="menu"><a href="{{ path('deposit') }}">Deposit</a></li>
+
+        {% endblock %}
         {% block javascripts %}{% endblock %}
     </body>
 </html>
