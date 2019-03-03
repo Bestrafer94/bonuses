@@ -3,7 +3,6 @@
 {% block body %}
     <h1>Login page</h1>
 
-    <a href="{{ path('logout') }}">Logout</a>
     {% if error %}
         <span>{{ error.messageKey }}</span>
     {% endif %}
