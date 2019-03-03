@@ -2,33 +2,25 @@
 
 namespace App\Handler;
 
-use App\ChainOfResponsibility\MoneyAllocating\BonusMoneyAllocatingHandler;
-use App\ChainOfResponsibility\MoneyAllocating\RealMoneyAllocatingHandler;
+use App\Event\AllocateMoneyEvent;
+use App\Event\DepositBonusAssignEvent;
+use App\Events;
 use App\Handler\Command\DepositCommand;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class DepositCommandHandler
 {
     /**
-     * @var BonusMoneyAllocatingHandler
+     * @var EventDispatcherInterface
      */
-    private $bonusMoneyAllocatingHandler;
+    protected $dispatcher;
 
     /**
-     * @var RealMoneyAllocatingHandler
+     * @param EventDispatcherInterface $dispatcher
      */
-    private $realMoneyAllocatingHandler;
-
-    /**
-     * @param BonusMoneyAllocatingHandler $bonusMoneyAllocatingHandler
-     * @param RealMoneyAllocatingHandler  $realMoneyAllocatingHandler
-     */
-    public function __construct(
-        BonusMoneyAllocatingHandler $bonusMoneyAllocatingHandler,
-        RealMoneyAllocatingHandler $realMoneyAllocatingHandler
-    ) {
-        $this->bonusMoneyAllocatingHandler = $bonusMoneyAllocatingHandler;
-        $this->realMoneyAllocatingHandler = $realMoneyAllocatingHandler;
+    public function __construct(EventDispatcherInterface $dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -39,25 +31,13 @@ class DepositCommandHandler
         $user = $command->getUser();
         $depositValue = $command->getDepositValue();
 
-        $this->allocateMoney($user, $depositValue);
-        $this->addBonus($user, $depositValue);
-    }
-
-    /**
-     * @param UserInterface $user
-     * @param int           $depositValue
-     */
-    private function allocateMoney(UserInterface $user, int $depositValue)
-    {
-        $this->bonusMoneyAllocatingHandler->setNext($this->realMoneyAllocatingHandler);
-        $this->bonusMoneyAllocatingHandler->handle($user, $depositValue);
-    }
-
-    /**
-     * @param UserInterface $user
-     * @param int           $depositValue
-     */
-    private function addBonus(UserInterface $user, int $depositValue)
-    {
+        $this->dispatcher->dispatch(
+            Events::MONEY_ALLOCATE,
+            new AllocateMoneyEvent($user, $depositValue)
+        );
+        $this->dispatcher->dispatch(
+            Events::BONUS_ASSIGN_DEPOSIT,
+            new DepositBonusAssignEvent($user, $depositValue)
+        );
     }
 }
