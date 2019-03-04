@@ -6,21 +6,22 @@ use App\Entity\Bonus;
 
 class BonusFactory implements BonusFactoryInterface
 {
-    const VALUES_OF_REWARD = [10, 20, 40, 50, 80, 100];
+    const MULTIPLIER_MIN = 1;
+    const MULTIPLIER_MAX = 100;
+
+    const LOGIN_VALUE_OF_REWARD_MIN = 1;
+    const LOGIN_VALUE_OF_REWARD_MAX = 100;
 
     /**
      * {@inheritdoc}
      */
     public function createDepositBonus(int $depositValue): Bonus
     {
-        $bonus = new Bonus();
-
-        $bonus->setName(Bonus::DEPOSIT_BONUS_NAME);
-        $bonus->setEventTrigger(Bonus::DEPOSIT_TRIGGER);
-        $bonus->setMultiplier(rand(1, 100));
-        $bonus->setValueOfReward((mt_rand() / mt_getrandmax()) * $depositValue);
-
-        return $bonus;
+        return (new Bonus())
+            ->setName(Bonus::DEPOSIT_BONUS_NAME)
+            ->setEventTrigger(Bonus::DEPOSIT_TRIGGER)
+            ->setMultiplier(rand(self::MULTIPLIER_MIN, self::MULTIPLIER_MAX))
+            ->setValueOfReward((mt_rand() / mt_getrandmax()) * $depositValue);
     }
 
     /**
@@ -28,13 +29,10 @@ class BonusFactory implements BonusFactoryInterface
      */
     public function createLoginBonus(): Bonus
     {
-        $bonus = new Bonus();
-
-        $bonus->setName(Bonus::LOGIN_BONUS_NAME);
-        $bonus->setEventTrigger(Bonus::LOGIN_TRIGGER);
-        $bonus->setMultiplier(rand(1, 100));
-        $bonus->setValueOfReward(self::VALUES_OF_REWARD[rand(0, count(self::VALUES_OF_REWARD) - 1)]);
-
-        return $bonus;
+        return (new Bonus())
+            ->setName(Bonus::LOGIN_BONUS_NAME)
+            ->setEventTrigger(Bonus::LOGIN_TRIGGER)
+            ->setMultiplier(rand(self::MULTIPLIER_MIN, self::MULTIPLIER_MAX))
+            ->setValueOfReward(rand(self::LOGIN_VALUE_OF_REWARD_MIN, self::LOGIN_VALUE_OF_REWARD_MAX));
     }
 }
