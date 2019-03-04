@@ -21,3 +21,7 @@ services:
     App\Handler\BetCommandHandler:
         tags:
             - { name: tactician.handler, command: App\Handler\Command\BetCommand }
+
+    App\Handler\UserProfileCommandHandler:
+        tags:
+            - { name: tactician.handler, command: App\Handler\Command\UserProfileCommand }

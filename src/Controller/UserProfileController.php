@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Handler\Command\UserProfileCommand;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,6 +18,12 @@ class UserProfileController extends BaseController
      */
     public function userProfile(Request $request): Response
     {
-        return $this->render('user_profile.html.twig');
+        $command = new UserProfileCommand($this->getUser());
+
+        return $this->render('user_profile.html.twig',
+            [
+                'userProfile' => $this->commandBus->handle($command),
+            ]
+        );
     }
 }

@@ -1,6 +1,12 @@
 {% block body %}
     {% include 'base.html.twig' %}
 
-    <h1>Welcome in user profile!</h1>
+    <div class="centered_form">
+        <h1>User profile data:</h1>
 
+        <p>Name: {{ userProfile.name }}</p>
+        <p>Last name: {{ userProfile.lastName }}</p>
+        <p>Gender: {{ userProfile.gender }}</p>
+        <p>Age: {{ userProfile.age }}</p>
+    </div>
 {% endblock %}
