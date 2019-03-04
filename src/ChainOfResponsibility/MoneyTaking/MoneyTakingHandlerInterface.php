@@ -16,8 +16,6 @@ interface MoneyTakingHandlerInterface
     /**
      * @param User $user
      * @param int  $betValue
-     *
-     * @return int
      */
-    public function handle(User $user, int $betValue): int;
+    public function handle(User $user, int $betValue);
 }

@@ -46,14 +46,14 @@ class BetFinishedSubscriber implements EventSubscriberInterface
         foreach ($wallets as $wallet) {
             if (Wallet::STATUS_WAGERED === $wallet->getStatus() && 0 === $wallet->getCurrentValue()) {
                 $wallet->setStatus(Wallet::STATUS_DEPLETED);
-            } elseif (Wallet::STATUS_WAGERED === $wallet->getStatus() && 0 === $wallet->getCurrentValue()) {
+            } elseif (Wallet::STATUS_WAGERED === $wallet->getStatus() && 0 !== $wallet->getCurrentValue()) {
                 $wallet->setStatus(Wallet::STATUS_ACTIVE);
             }
 
             if ($wallet->getBonus()->getMultiplier() <= 0) {
                 /** @var Wallet $realMoneyWallet */
                 $realMoneyWallet = $this->walletRepository->findOneBy(['user' => $user, 'isOrigin' => true]);
-                $realMoneyWallet->addDepositMoney($wallet->getInitialValue());
+                $realMoneyWallet->addMoney($wallet->getInitialValue());
                 $wallet->setStatus(Wallet::STATUS_DEPLETED);
             }
         }

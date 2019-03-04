@@ -4,8 +4,8 @@ namespace App\Generator;
 
 class BetScoreGenerator implements BetScoreGeneratorInterface
 {
-    CONST SPIN_COST = 10;
-    CONST WIN_SPIN_COURSE = 2;
+    const SPIN_COST = 10;
+    const WIN_SPIN_COURSE = 2;
 
     /**
      * {@inheritdoc}
