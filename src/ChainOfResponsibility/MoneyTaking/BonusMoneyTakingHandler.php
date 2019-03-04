@@ -4,6 +4,7 @@ namespace App\ChainOfResponsibility\MoneyTaking;
 
 use App\Entity\User;
 use App\Entity\Wallet;
+use App\Exception\NotEnoughMoneyException;
 
 class BonusMoneyTakingHandler extends MoneyTakingHandler
 {
@@ -46,7 +47,7 @@ class BonusMoneyTakingHandler extends MoneyTakingHandler
         }
 
         if (0 !== $betValue) {
-            return parent::handle($user, $betValue);
+            throw new NotEnoughMoneyException();
         } else {
             $this->entityManager->flush();
         }

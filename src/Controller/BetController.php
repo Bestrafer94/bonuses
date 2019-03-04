@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Exception\NotEnoughMoneyException;
 use App\Form\Data\BetData;
 use App\Form\Type\BetType;
 use App\Handler\Command\BetCommand;
@@ -21,16 +22,23 @@ class BetController extends BaseController
     public function bet(Request $request): Response
     {
         $winAmount = 0;
+        $error = '';
         $form = $this->createForm(BetType::class, new BetData());
 
         if ($this->isFormValidAndSubmitted($form, $request)) {
             $command = new BetCommand($form->getData(), $this->getUser());
-            $winAmount = $this->commandBus->handle($command);
+
+            try {
+                $winAmount = $this->commandBus->handle($command);
+            } catch (NotEnoughMoneyException $exception) {
+                $error = $exception->getMessageKey();
+            }
         }
 
         return $this->render('bet.html.twig', [
-            'betForm' => $this->createForm(BetType::class, )->createView(),
+            'betForm' => $this->createForm(BetType::class)->createView(),
             'winAmount' => $winAmount,
+            'error' => $error,
         ]);
     }
 }

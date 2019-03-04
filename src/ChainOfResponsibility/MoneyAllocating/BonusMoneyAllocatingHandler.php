@@ -4,23 +4,9 @@ namespace App\ChainOfResponsibility\MoneyAllocating;
 
 use App\Entity\Wallet;
 use App\Entity\User;
-use App\Repository\WalletRepository;
 
 class BonusMoneyAllocatingHandler extends MoneyAllocatingHandler
 {
-    /**
-     * @var WalletRepository
-     */
-    private $walletRepository;
-
-    /**
-     * @param WalletRepository $walletRepository
-     */
-    public function __construct(WalletRepository $walletRepository)
-    {
-        $this->walletRepository = $walletRepository;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -40,11 +26,14 @@ class BonusMoneyAllocatingHandler extends MoneyAllocatingHandler
                     $wallet->addMoney($depositValue);
                     $depositValue = 0;
                 }
+                $this->entityManager->persist($wallet);
             }
         }
 
         if (0 !== $depositValue) {
             parent::handle($user, $depositValue);
+        } else {
+            $this->entityManager->flush();
         }
     }
 

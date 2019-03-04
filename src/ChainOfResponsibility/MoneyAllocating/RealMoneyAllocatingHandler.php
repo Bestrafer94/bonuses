@@ -3,31 +3,9 @@
 namespace App\ChainOfResponsibility\MoneyAllocating;
 
 use App\Entity\User;
-use App\Repository\WalletRepository;
-use Doctrine\ORM\EntityManagerInterface;
 
 class RealMoneyAllocatingHandler extends MoneyAllocatingHandler
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    /**
-     * @var WalletRepository
-     */
-    private $walletRepository;
-
-    /**
-     * @param EntityManagerInterface $entityManager
-     * @param WalletRepository       $walletRepository
-     */
-    public function __construct(EntityManagerInterface $entityManager, WalletRepository $walletRepository)
-    {
-        $this->entityManager = $entityManager;
-        $this->walletRepository = $walletRepository;
-    }
-
     /**
      * {@inheritdoc}
      */
