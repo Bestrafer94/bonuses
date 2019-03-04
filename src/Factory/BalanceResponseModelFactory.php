@@ -9,6 +9,9 @@ use App\Repository\WalletRepository;
 
 class BalanceResponseModelFactory implements BalanceResponseModelFactoryInterface
 {
+    const NAME_INDEX = 'name';
+    const VALUE_INDEX = 'value';
+
     /**
      * @var WalletRepository
      */
@@ -39,8 +42,8 @@ class BalanceResponseModelFactory implements BalanceResponseModelFactoryInterfac
             $currentValue = $bonusWallet->getCurrentValue();
             $total += $currentValue;
             $bonuses[] = [
-                'name' => $bonusWallet->getBonus()->getName(),
-                'value' => $currentValue,
+                self::NAME_INDEX => $bonusWallet->getBonus()->getName(),
+                self::VALUE_INDEX => $currentValue,
             ];
         }
 
