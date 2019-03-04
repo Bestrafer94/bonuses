@@ -7,9 +7,11 @@ use App\Entity\Bonus;
 interface BonusFactoryInterface
 {
     /**
+     * @param int $depositValue
+     *
      * @return Bonus
      */
-    public function createDepositBonus(): Bonus;
+    public function createDepositBonus(int $depositValue): Bonus;
 
     /**
      * @return Bonus

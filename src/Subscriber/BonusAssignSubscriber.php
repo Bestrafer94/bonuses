@@ -62,6 +62,21 @@ class BonusAssignSubscriber implements EventSubscriberInterface
      */
     public function onDeposit(DepositBonusAssignEvent $depositBonusAssignEvent)
     {
+        $user = $depositBonusAssignEvent->getUser();
+        $depositValue = $depositBonusAssignEvent->getDepositValue();
+
+        // @TODO implement rule and verify requirements
+        $threshold = 0;
+        /** @var BonusMoneyWallet $wallet */
+        foreach ($user->getBonusMoneyWallets() as $wallet) {
+            if (BonusMoneyWallet::STATUS_DEPLETED !== $wallet->getStatus()) {
+                $threshold += $wallet->getInitialValue() - $wallet->getCurrentValue();
+            }
+        }
+
+        if ($depositValue > $threshold) {
+            $this->handleBonus($user, $this->bonusFactory->createDepositBonus($depositValue));
+        }
     }
 
     /**
@@ -80,6 +95,18 @@ class BonusAssignSubscriber implements EventSubscriberInterface
         }
 
         $bonus = $this->bonusFactory->createLoginBonus();
+        $wallet = $this->walletFactory->createBonusMoneyWallet($bonus);
+        $user->addBonusMoneyWallet($wallet);
+        $this->entityManager->persist($wallet);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @param User  $user
+     * @param Bonus $bonus
+     */
+    private function handleBonus(User $user, Bonus $bonus)
+    {
         $wallet = $this->walletFactory->createBonusMoneyWallet($bonus);
         $user->addBonusMoneyWallet($wallet);
         $this->entityManager->persist($wallet);

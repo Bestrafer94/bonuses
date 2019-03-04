@@ -11,14 +11,14 @@ class BonusFactory implements BonusFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createDepositBonus(): Bonus
+    public function createDepositBonus(int $depositValue): Bonus
     {
         $bonus = new Bonus();
 
         $bonus->setName(Bonus::DEPOSIT_BONUS_NAME);
         $bonus->setEventTrigger(Bonus::DEPOSIT_TRIGGER);
         $bonus->setMultiplier(rand(1, 100));
-        $bonus->setValueOfReward(self::VALUES_OF_REWARD[rand(0, count(self::VALUES_OF_REWARD) - 1)]);
+        $bonus->setValueOfReward((mt_rand() / mt_getrandmax()) * $depositValue);
 
         return $bonus;
     }
