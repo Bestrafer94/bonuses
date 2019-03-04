@@ -6,6 +6,7 @@ use App\Entity\BonusMoneyWallet;
 use App\Entity\RealMoneyWallet;
 use App\Event\BetFinishedEvent;
 use App\Events;
+use App\Repository\BonusMoneyWalletRepository;
 use App\Repository\RealMoneyWalletRepository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -17,11 +18,18 @@ class BetFinishedSubscriber implements EventSubscriberInterface
     private $realMoneyWalletRepository;
 
     /**
-     * @param RealMoneyWalletRepository $realMoneyWalletRepository
+     * @var BonusMoneyWalletRepository
      */
-    public function __construct(RealMoneyWalletRepository $realMoneyWalletRepository)
+    private $bonusMoneyWalletRepository;
+
+    /**
+     * @param RealMoneyWalletRepository $realMoneyWalletRepository
+     * @param BonusMoneyWalletRepository $bonusMoneyWalletRepository
+     */
+    public function __construct(RealMoneyWalletRepository $realMoneyWalletRepository, BonusMoneyWalletRepository $bonusMoneyWalletRepository)
     {
         $this->realMoneyWalletRepository = $realMoneyWalletRepository;
+        $this->bonusMoneyWalletRepository = $bonusMoneyWalletRepository;
     }
 
     /**
@@ -41,7 +49,7 @@ class BetFinishedSubscriber implements EventSubscriberInterface
     {
         $user = $betFinishedEvent->getUser();
 
-        $wallets = $user->getBonusMoneyWallets();
+        $wallets = $this->bonusMoneyWalletRepository->findBy(['user' => $user]);
 
         /** @var BonusMoneyWallet $wallet */
         foreach ($wallets as $wallet) {

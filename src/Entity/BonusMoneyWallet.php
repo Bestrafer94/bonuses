@@ -43,6 +43,13 @@ class BonusMoneyWallet extends Wallet
     private $bonus;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     *
+     * @var User
+     */
+    private $user;
+
+    /**
      * @return string
      */
     public function getStatus(): string
@@ -100,6 +107,24 @@ class BonusMoneyWallet extends Wallet
     {
         $this->initialValue = $initialValue;
 
+        return $this;
+    }
+
+    /**
+     * @return User
+     */
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param User $user
+     * @return BonusMoneyWallet
+     */
+    public function setUser(User $user): BonusMoneyWallet
+    {
+        $this->user = $user;
         return $this;
     }
 

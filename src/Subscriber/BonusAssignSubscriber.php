@@ -65,10 +65,12 @@ class BonusAssignSubscriber implements EventSubscriberInterface
         $user = $depositBonusAssignEvent->getUser();
         $depositValue = $depositBonusAssignEvent->getDepositValue();
 
+        $wallets = $this->entityManager->getRepository(BonusMoneyWallet::class)->findBy(['user' => $user]);
+
         // @TODO implement rule and verify requirements
         $threshold = 0;
         /** @var BonusMoneyWallet $wallet */
-        foreach ($user->getBonusMoneyWallets() as $wallet) {
+        foreach ($wallets as $wallet) {
             if (BonusMoneyWallet::STATUS_DEPLETED !== $wallet->getStatus()) {
                 $threshold += $wallet->getInitialValue() - $wallet->getCurrentValue();
             }
@@ -87,8 +89,9 @@ class BonusAssignSubscriber implements EventSubscriberInterface
         /** @var User $user */
         $user = $interactiveLoginEvent->getAuthenticationToken()->getUser();
 
+        $wallets = $this->entityManager->getRepository(BonusMoneyWallet::class)->findBy(['user' => $user]);
         /** @var BonusMoneyWallet $bonusMoneyWallet */
-        foreach ($user->getBonusMoneyWallets() as $bonusMoneyWallet) {
+        foreach ($wallets as $bonusMoneyWallet) {
             if (Bonus::LOGIN_TRIGGER === $bonusMoneyWallet->getBonus()->getEventTrigger()) {
                 return;
             }
@@ -96,7 +99,7 @@ class BonusAssignSubscriber implements EventSubscriberInterface
 
         $bonus = $this->bonusFactory->createLoginBonus();
         $wallet = $this->walletFactory->createBonusMoneyWallet($bonus);
-        $user->addBonusMoneyWallet($wallet);
+        $wallet->setUser($user);
         $this->entityManager->persist($wallet);
         $this->entityManager->flush();
     }
@@ -108,7 +111,7 @@ class BonusAssignSubscriber implements EventSubscriberInterface
     private function handleBonus(User $user, Bonus $bonus)
     {
         $wallet = $this->walletFactory->createBonusMoneyWallet($bonus);
-        $user->addBonusMoneyWallet($wallet);
+        $wallet->setUser($user);
         $this->entityManager->persist($wallet);
         $this->entityManager->flush();
     }

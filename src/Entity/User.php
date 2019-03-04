@@ -39,22 +39,6 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\BonusMoneyWallet")
-     * @ORM\JoinTable(name="users_bonus_money_wallets",
-     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="bonus_money_wallets_id", referencedColumnName="id", unique=true)}
-     * )
-     *
-     * @var ArrayCollection
-     */
-    private $bonusMoneyWallets;
-
-    public function __construct()
-    {
-        $this->bonusMoneyWallets = new ArrayCollection();
-    }
-
-    /**
      * @return int
      */
     public function getId(): int
@@ -98,26 +82,6 @@ class User implements UserInterface
     public function setPassword(string $password): User
     {
         $this->password = $password;
-
-        return $this;
-    }
-
-    /**
-     * @return ArrayCollection|PersistentCollection
-     */
-    public function getBonusMoneyWallets()
-    {
-        return $this->bonusMoneyWallets;
-    }
-
-    /**
-     * @param BonusMoneyWallet $bonusMoneyWallets
-     *
-     * @return User
-     */
-    public function addBonusMoneyWallet(BonusMoneyWallet $bonusMoneyWallets): User
-    {
-        $this->bonusMoneyWallets[] = $bonusMoneyWallets;
 
         return $this;
     }

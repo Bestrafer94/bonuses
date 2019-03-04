@@ -4,6 +4,7 @@ namespace App\ChainOfResponsibility\MoneyTaking;
 
 use App\Entity\RealMoneyWallet;
 use App\Entity\User;
+use App\Repository\BonusMoneyWalletRepository;
 use App\Repository\RealMoneyWalletRepository;
 
 class RealMoneyTakingHandler extends MoneyTakingHandler
@@ -28,6 +29,7 @@ class RealMoneyTakingHandler extends MoneyTakingHandler
     {
         /** @var RealMoneyWallet $wallet */
         $wallet = $this->realMoneyWalletRepository->findOneBy(['user' => $user]);
+
         $balance = $wallet->getCurrentValue();
 
         if ($betValue <= $wallet->getCurrentValue()) {
