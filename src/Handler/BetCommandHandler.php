@@ -3,6 +3,7 @@
 namespace App\Handler;
 
 use App\Event\AllocateMoneyEvent;
+use App\Event\BetFinishedEvent;
 use App\Event\TakeMoneyEvent;
 use App\Events;
 use App\Generator\BetScoreGeneratorInterface;
@@ -53,7 +54,10 @@ class BetCommandHandler
             new AllocateMoneyEvent($user, $score)
         );
 
-        //uzupełnić wartość wagering w bonusowych portfelach i statusy zaktualizować
+        $this->dispatcher->dispatch(
+            Events::BET_FINISHED,
+            new BetFinishedEvent($user)
+        );
 
         return $score;
     }
