@@ -12,14 +12,15 @@ class BonusMoneyAllocatingHandler extends MoneyAllocatingHandler
      */
     public function handle(User $user, int $depositValue): int
     {
+        /** @var BonusMoneyWallet $bonusMoneyWallet */
         foreach ($user->getBonusMoneyWallets() as $bonusMoneyWallet) {
             if (BonusMoneyWallet::STATUS_ACTIVE === $bonusMoneyWallet->getStatus()) {
                 $shortAge = $bonusMoneyWallet->getInitialValue() - $bonusMoneyWallet->getCurrentValue();
-                if ($shortAge <= $depositValue) {
-                    $bonusMoneyWallet->addDepositeMoney($depositValue);
+                if ($shortAge <= $depositValue && $shortAge > 0) {
+                    $bonusMoneyWallet->addDepositMoney($depositValue);
                     $depositValue -= $shortAge;
-                } else {
-                    $bonusMoneyWallet->addDepositeMoney($depositValue);
+                } elseif ($shortAge > $depositValue) {
+                    $bonusMoneyWallet->addDepositMoney($depositValue);
 
                     return 0;
                 }
