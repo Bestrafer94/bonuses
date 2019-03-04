@@ -33,7 +33,13 @@ class BalanceResponseModelFactory implements BalanceResponseModelFactoryInterfac
         /** @var Wallet $realMoneyWallet */
         $realMoneyWallet = $this->walletRepository->findOneBy(['user' => $user, 'isOrigin' => true]);
         $realMoney = $realMoneyWallet->getCurrentValue();
-        $bonusWallets = $this->walletRepository->findBy(['user' => $user, 'isOrigin' => false]);
+        $bonusWallets = $this->walletRepository->findBy(
+            [
+                'user' => $user,
+                'isOrigin' => false,
+                'status' => Wallet::STATUS_ACTIVE
+            ]
+        );
         $total = 0;
         $bonuses = [];
 
