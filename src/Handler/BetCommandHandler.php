@@ -2,8 +2,10 @@
 
 namespace App\Handler;
 
+use App\Event\AllocateMoneyEvent;
 use App\Event\TakeMoneyEvent;
 use App\Events;
+use App\Generator\BetScoreGeneratorInterface;
 use App\Handler\Command\BetCommand;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -12,14 +14,21 @@ class BetCommandHandler
     /**
      * @var EventDispatcherInterface
      */
-    protected $dispatcher;
+    private $dispatcher;
 
     /**
-     * @param EventDispatcherInterface $dispatcher
+     * @var BetScoreGeneratorInterface
      */
-    public function __construct(EventDispatcherInterface $dispatcher)
+    private $betScoreGenerator;
+
+    /**
+     * @param EventDispatcherInterface   $dispatcher
+     * @param BetScoreGeneratorInterface $betScoreGenerator
+     */
+    public function __construct(EventDispatcherInterface $dispatcher, BetScoreGeneratorInterface $betScoreGenerator)
     {
         $this->dispatcher = $dispatcher;
+        $this->betScoreGenerator = $betScoreGenerator;
     }
 
     /**
@@ -37,11 +46,15 @@ class BetCommandHandler
             new TakeMoneyEvent($user, $betValue)
         );
 
-        //odwołać się do serwisu, który wylosuje nagrodę
-        //dodać nagrodę do portfeli
-        //uzupełnić wartość wagering w bonusowych portfelach
-        //zwrócić wartość wygranej
+        $score = $this->betScoreGenerator->generate($betValue);
 
-        return 100;
+        $this->dispatcher->dispatch(
+            Events::MONEY_ALLOCATE,
+            new AllocateMoneyEvent($user, $score)
+        );
+
+        //uzupełnić wartość wagering w bonusowych portfelach i statusy zaktualizować
+
+        return $score;
     }
 }
