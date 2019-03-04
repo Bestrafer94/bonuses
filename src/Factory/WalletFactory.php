@@ -3,32 +3,34 @@
 namespace App\Factory;
 
 use App\Entity\Bonus;
-use App\Entity\BonusMoneyWallet;
-use App\Entity\RealMoneyWallet;
+use App\Entity\Wallet;
 
 class WalletFactory implements WalletFactoryInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function createRealMoneyWallet(): RealMoneyWallet
+    public function createRealMoneyWallet(): Wallet
     {
-        return new RealMoneyWallet();
+        return (new Wallet())
+            ->setStatus(Wallet::STATUS_ACTIVE)
+            ->setIsOrigin(true)
+            ->setCurrency(Wallet::REAL_MONEY_CURRENCY);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function createBonusMoneyWallet(Bonus $bonus): BonusMoneyWallet
+    public function createBonusMoneyWallet(Bonus $bonus): Wallet
     {
         $valueOfReward = $bonus->getValueOfReward();
 
-        $wallet = new BonusMoneyWallet();
-        $wallet->setBonus($bonus);
-        $wallet->setCurrentValue($valueOfReward);
-        $wallet->setInitialValue($valueOfReward);
-        $wallet->setStatus(BonusMoneyWallet::STATUS_ACTIVE);
-
-        return $wallet;
+        return (new Wallet())
+            ->setBonus($bonus)
+            ->setCurrentValue($valueOfReward)
+            ->setInitialValue($valueOfReward)
+            ->setStatus(Wallet::STATUS_ACTIVE)
+            ->setIsOrigin(false)
+            ->setCurrency(Wallet::BONUS_MONEY_CURRENCY);
     }
 }

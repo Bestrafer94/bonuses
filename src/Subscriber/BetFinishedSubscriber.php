@@ -2,34 +2,25 @@
 
 namespace App\Subscriber;
 
-use App\Entity\BonusMoneyWallet;
-use App\Entity\RealMoneyWallet;
+use App\Entity\Wallet;
 use App\Event\BetFinishedEvent;
 use App\Events;
-use App\Repository\BonusMoneyWalletRepository;
-use App\Repository\RealMoneyWalletRepository;
+use App\Repository\WalletRepository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class BetFinishedSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var RealMoneyWalletRepository
+     * @var WalletRepository
      */
-    private $realMoneyWalletRepository;
+    private $walletRepository;
 
     /**
-     * @var BonusMoneyWalletRepository
+     * @param WalletRepository $walletRepository
      */
-    private $bonusMoneyWalletRepository;
-
-    /**
-     * @param RealMoneyWalletRepository $realMoneyWalletRepository
-     * @param BonusMoneyWalletRepository $bonusMoneyWalletRepository
-     */
-    public function __construct(RealMoneyWalletRepository $realMoneyWalletRepository, BonusMoneyWalletRepository $bonusMoneyWalletRepository)
+    public function __construct(WalletRepository $walletRepository)
     {
-        $this->realMoneyWalletRepository = $realMoneyWalletRepository;
-        $this->bonusMoneyWalletRepository = $bonusMoneyWalletRepository;
+        $this->walletRepository = $walletRepository;
     }
 
     /**
@@ -49,21 +40,21 @@ class BetFinishedSubscriber implements EventSubscriberInterface
     {
         $user = $betFinishedEvent->getUser();
 
-        $wallets = $this->bonusMoneyWalletRepository->findBy(['user' => $user]);
+        $wallets = $this->walletRepository->findBy(['user' => $user, 'isOrigin' => false]);
 
-        /** @var BonusMoneyWallet $wallet */
+        /** @var Wallet $wallet */
         foreach ($wallets as $wallet) {
-            if (BonusMoneyWallet::STATUS_WAGERED === $wallet->getStatus() && 0 === $wallet->getCurrentValue()) {
-                $wallet->setStatus(BonusMoneyWallet::STATUS_DEPLETED);
-            } elseif (BonusMoneyWallet::STATUS_WAGERED === $wallet->getStatus() && 0 === $wallet->getCurrentValue()) {
-                $wallet->setStatus(BonusMoneyWallet::STATUS_ACTIVE);
+            if (Wallet::STATUS_WAGERED === $wallet->getStatus() && 0 === $wallet->getCurrentValue()) {
+                $wallet->setStatus(Wallet::STATUS_DEPLETED);
+            } elseif (Wallet::STATUS_WAGERED === $wallet->getStatus() && 0 === $wallet->getCurrentValue()) {
+                $wallet->setStatus(Wallet::STATUS_ACTIVE);
             }
 
             if ($wallet->getBonus()->getMultiplier() <= 0) {
-                /** @var RealMoneyWallet $realMoneyWallet */
-                $realMoneyWallet = $this->realMoneyWalletRepository->findOneBy(['user' => $user]);
+                /** @var Wallet $realMoneyWallet */
+                $realMoneyWallet = $this->walletRepository->findOneBy(['user' => $user, 'isOrigin' => true]);
                 $realMoneyWallet->addDepositMoney($wallet->getInitialValue());
-                $wallet->setStatus(BonusMoneyWallet::STATUS_DEPLETED);
+                $wallet->setStatus(Wallet::STATUS_DEPLETED);
             }
         }
     }

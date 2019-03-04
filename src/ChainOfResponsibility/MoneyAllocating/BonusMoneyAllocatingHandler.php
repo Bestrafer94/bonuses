@@ -2,50 +2,68 @@
 
 namespace App\ChainOfResponsibility\MoneyAllocating;
 
-use App\Entity\BonusMoneyWallet;
+use App\Entity\Wallet;
 use App\Entity\User;
-use App\Repository\BonusMoneyWalletRepository;
+use App\Repository\WalletRepository;
 
 class BonusMoneyAllocatingHandler extends MoneyAllocatingHandler
 {
     /**
-     * @var BonusMoneyWalletRepository
+     * @var WalletRepository
      */
-    private $bonusMoneyWalletRepository;
+    private $walletRepository;
 
     /**
-     * @param BonusMoneyWalletRepository $bonusMoneyWalletRepository
+     * @param WalletRepository $walletRepository
      */
-    public function __construct(BonusMoneyWalletRepository $bonusMoneyWalletRepository)
+    public function __construct(WalletRepository $walletRepository)
     {
-        $this->bonusMoneyWalletRepository = $bonusMoneyWalletRepository;
+        $this->walletRepository = $walletRepository;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function handle(User $user, int $depositValue): int
+    public function handle(User $user, int $depositValue)
     {
-        $wallets = $this->bonusMoneyWalletRepository->findBy(['user' => $user]);
+        $wallets = $this->walletRepository->findBy(['user' => $user, 'isOrigin' => false]);
+        shuffle($wallets);
 
-        /** @var BonusMoneyWallet $bonusMoneyWallet */
-        foreach ($wallets as $bonusMoneyWallet) {
-            if (BonusMoneyWallet::STATUS_DEPLETED !== $bonusMoneyWallet->getStatus()) {
-                $shortAge = $bonusMoneyWallet->getInitialValue() - $bonusMoneyWallet->getCurrentValue();
-                if ($shortAge <= $depositValue && $shortAge > 0) {
-                    dump($shortAge, 'elo1');die;
-                    $bonusMoneyWallet->addDepositMoney($depositValue);
-                    $depositValue -= $shortAge;
-                } elseif ($shortAge > $depositValue) {
-                    $bonusMoneyWallet->addDepositMoney($depositValue);
-
-                    return 0;
+        /** @var Wallet $wallet */
+        foreach ($wallets as $wallet) {
+            $shortage = $wallet->getInitialValue() - $wallet->getCurrentValue();
+            if ($this->isReadyToAllocateMoney($wallet, $shortage)) {
+                if ($shortage <= $depositValue) {
+                    $wallet->setCurrentValue($wallet->getInitialValue());
+                    $depositValue -= $shortage;
+                } else {
+                    $wallet->addMoney($depositValue);
+                    $depositValue = 0;
                 }
             }
         }
 
         if (0 !== $depositValue) {
-            return parent::handle($user, $depositValue);
+            parent::handle($user, $depositValue);
         }
+    }
+
+    /**
+     * @param Wallet $wallet
+     * @param int    $shortage
+     *
+     * @return bool
+     */
+    private function isReadyToAllocateMoney(Wallet $wallet, int $shortage): bool
+    {
+        if (Wallet::STATUS_DEPLETED === $wallet->getStatus()) {
+            return false;
+        }
+
+        if ($shortage <= 0) {
+            return false;
+        }
+
+        return true;
     }
 }

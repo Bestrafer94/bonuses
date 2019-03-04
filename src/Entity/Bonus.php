@@ -63,10 +63,10 @@ class Bonus
     private $eventTrigger;
 
     /**
-     * @ORM\OneToOne(targetEntity="BonusMoneyWallet", inversedBy="bonus")
+     * @ORM\OneToOne(targetEntity="Wallet", inversedBy="bonus")
      * @ORM\JoinColumn(name="wallet_id", referencedColumnName="id")
      *
-     * @var BonusMoneyWallet
+     * @var Wallet
      */
     private $wallet;
 
@@ -171,19 +171,19 @@ class Bonus
     }
 
     /**
-     * @return BonusMoneyWallet
+     * @return Wallet
      */
-    public function getWallet(): BonusMoneyWallet
+    public function getWallet(): Wallet
     {
         return $this->wallet;
     }
 
     /**
-     * @param BonusMoneyWallet $wallet
+     * @param Wallet $wallet
      *
      * @return Bonus
      */
-    public function setWallet(BonusMoneyWallet $wallet): Bonus
+    public function setWallet(Wallet $wallet): Bonus
     {
         $this->wallet = $wallet;
 

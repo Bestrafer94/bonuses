@@ -3,20 +3,19 @@
 namespace App\Factory;
 
 use App\Entity\Bonus;
-use App\Entity\BonusMoneyWallet;
-use App\Entity\RealMoneyWallet;
+use App\Entity\Wallet;
 
 interface WalletFactoryInterface
 {
     /**
-     * @return RealMoneyWallet
+     * @return Wallet
      */
-    public function createRealMoneyWallet(): RealMoneyWallet;
+    public function createRealMoneyWallet(): Wallet;
 
     /**
      * @param Bonus $bonus
      *
-     * @return BonusMoneyWallet
+     * @return Wallet
      */
-    public function createBonusMoneyWallet(Bonus $bonus): BonusMoneyWallet;
+    public function createBonusMoneyWallet(Bonus $bonus): Wallet;
 }

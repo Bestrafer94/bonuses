@@ -3,8 +3,7 @@
 namespace tests\Factory;
 
 use App\Entity\Bonus;
-use App\Entity\BonusMoneyWallet;
-use App\Entity\RealMoneyWallet;
+use App\Entity\Wallet;
 use App\Factory\WalletFactory;
 use App\Factory\WalletFactoryInterface;
 use PHPUnit\Framework\TestCase;
@@ -34,7 +33,10 @@ class WalletFactoryTest extends TestCase
     {
         $wallet = $this->walletFactory->createRealMoneyWallet();
 
-        $this->assertInstanceOf(RealMoneyWallet::class, $wallet);
+        $this->assertInstanceOf(Wallet::class, $wallet);
+        $this->assertEquals(Wallet::STATUS_ACTIVE, $wallet->getStatus());
+        $this->assertEquals(Wallet::REAL_MONEY_CURRENCY, $wallet->getCurrency());
+        $this->assertTrue($wallet->isOrigin());
     }
 
     public function testCreateBonusMoneyWallet()
@@ -44,11 +46,12 @@ class WalletFactoryTest extends TestCase
 
         $wallet = $this->walletFactory->createBonusMoneyWallet($this->bonusMock);
 
-        $this->assertInstanceOf(BonusMoneyWallet::class, $wallet);
+        $this->assertInstanceOf(Wallet::class, $wallet);
         $this->assertEquals($valueOfReward, $wallet->getInitialValue());
         $this->assertEquals($valueOfReward, $wallet->getCurrentValue());
-        $this->assertEquals(BonusMoneyWallet::BONUS_MONEY_CURRENCY, $wallet->getCurrency());
-        $this->assertEquals(BonusMoneyWallet::STATUS_ACTIVE, $wallet->getStatus());
+        $this->assertEquals(Wallet::BONUS_MONEY_CURRENCY, $wallet->getCurrency());
+        $this->assertEquals(Wallet::STATUS_ACTIVE, $wallet->getStatus());
+        $this->assertFalse($wallet->isOrigin());
         $this->assertInstanceOf(Bonus::class, $wallet->getBonus());
     }
 }

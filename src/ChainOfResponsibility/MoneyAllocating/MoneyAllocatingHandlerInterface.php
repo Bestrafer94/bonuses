@@ -16,8 +16,6 @@ interface MoneyAllocatingHandlerInterface
     /**
      * @param User $user
      * @param int  $depositValue
-     *
-     * @return int
      */
-    public function handle(User $user, int $depositValue): int;
+    public function handle(User $user, int $depositValue);
 }

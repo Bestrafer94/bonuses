@@ -24,12 +24,10 @@ abstract class MoneyAllocatingHandler implements MoneyAllocatingHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function handle(User $user, int $depositValue): int
+    public function handle(User $user, int $depositValue)
     {
         if ($this->nextHandler) {
             return $this->nextHandler->handle($user, $depositValue);
         }
-
-        return 0;
     }
 }

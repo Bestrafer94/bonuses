@@ -2,24 +2,23 @@
 
 namespace App\ChainOfResponsibility\MoneyTaking;
 
-use App\Entity\RealMoneyWallet;
 use App\Entity\User;
-use App\Repository\BonusMoneyWalletRepository;
-use App\Repository\RealMoneyWalletRepository;
+use App\Entity\Wallet;
+use App\Repository\WalletRepository;
 
 class RealMoneyTakingHandler extends MoneyTakingHandler
 {
     /**
-     * @var RealMoneyWalletRepository
+     * @var WalletRepository
      */
-    private $realMoneyWalletRepository;
+    private $walletRepository;
 
     /**
-     * @param RealMoneyWalletRepository $realMoneyWalletRepository
+     * @param WalletRepository $walletRepository
      */
-    public function __construct(RealMoneyWalletRepository $realMoneyWalletRepository)
+    public function __construct(WalletRepository $walletRepository)
     {
-        $this->realMoneyWalletRepository = $realMoneyWalletRepository;
+        $this->walletRepository = $walletRepository;
     }
 
     /**
@@ -27,13 +26,13 @@ class RealMoneyTakingHandler extends MoneyTakingHandler
      */
     public function handle(User $user, int $betValue): int
     {
-        /** @var RealMoneyWallet $wallet */
-        $wallet = $this->realMoneyWalletRepository->findOneBy(['user' => $user]);
+        /** @var Wallet $wallet */
+        $wallet = $this->walletRepository->findOneBy(['user' => $user, 'isOrigin' => true]);
 
         $balance = $wallet->getCurrentValue();
 
         if ($betValue <= $wallet->getCurrentValue()) {
-            $wallet->addDepositMoney($betValue * -1);
+            $wallet->takeMoney($betValue);
             $betValue -= 0;
         } else {
             $wallet->setCurrentValue(0);

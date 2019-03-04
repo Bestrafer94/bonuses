@@ -3,7 +3,7 @@
 namespace App\ChainOfResponsibility\MoneyAllocating;
 
 use App\Entity\User;
-use App\Repository\RealMoneyWalletRepository;
+use App\Repository\WalletRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class RealMoneyAllocatingHandler extends MoneyAllocatingHandler
@@ -14,35 +14,33 @@ class RealMoneyAllocatingHandler extends MoneyAllocatingHandler
     private $entityManager;
 
     /**
-     * @var RealMoneyWalletRepository
+     * @var WalletRepository
      */
-    private $realMoneyWalletRepository;
+    private $walletRepository;
 
     /**
-     * @param EntityManagerInterface    $entityManager
-     * @param RealMoneyWalletRepository $realMoneyWalletRepository
+     * @param EntityManagerInterface $entityManager
+     * @param WalletRepository       $walletRepository
      */
-    public function __construct(EntityManagerInterface $entityManager, RealMoneyWalletRepository $realMoneyWalletRepository)
+    public function __construct(EntityManagerInterface $entityManager, WalletRepository $walletRepository)
     {
         $this->entityManager = $entityManager;
-        $this->realMoneyWalletRepository = $realMoneyWalletRepository;
+        $this->walletRepository = $walletRepository;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function handle(User $user, int $depositValue): int
+    public function handle(User $user, int $depositValue)
     {
-        $wallet = $this->realMoneyWalletRepository->findOneBy(['user' => $user]);
-        $wallet->addDepositMoney($depositValue);
+        $wallet = $this->walletRepository->findOneBy(['user' => $user, 'isOrigin' => true]);
+        $wallet->addMoney($depositValue);
 
         $this->entityManager->persist($wallet);
         $this->entityManager->flush();
 
         if (0 !== $depositValue) {
-            return parent::handle($user, $depositValue);
+            parent::handle($user, $depositValue);
         }
-
-        return 0;
     }
 }
