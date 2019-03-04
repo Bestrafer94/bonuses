@@ -2,57 +2,46 @@
 
 namespace App\Handler;
 
-use App\ChainOfResponsibility\MoneyTaking\BonusMoneyTakingHandler;
-use App\ChainOfResponsibility\MoneyTaking\RealMoneyTakingHandler;
+use App\Event\TakeMoneyEvent;
+use App\Events;
 use App\Handler\Command\BetCommand;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class BetCommandHandler
 {
     /**
-     * @var BonusMoneyTakingHandler
+     * @var EventDispatcherInterface
      */
-    private $bonusMoneyTakingHandler;
+    protected $dispatcher;
 
     /**
-     * @var RealMoneyTakingHandler
+     * @param EventDispatcherInterface $dispatcher
      */
-    private $realMoneyTakingHandler;
-
-    /**
-     * @param BonusMoneyTakingHandler $bonusMoneyTakingHandler
-     * @param RealMoneyTakingHandler  $realMoneyTakingHandler
-     */
-    public function __construct(BonusMoneyTakingHandler $bonusMoneyTakingHandler, RealMoneyTakingHandler $realMoneyTakingHandler)
+    public function __construct(EventDispatcherInterface $dispatcher)
     {
-        $this->bonusMoneyTakingHandler = $bonusMoneyTakingHandler;
-        $this->realMoneyTakingHandler = $realMoneyTakingHandler;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
      * @param BetCommand $command
+     *
+     * @return int
      */
     public function handle(BetCommand $command): int
     {
         $user = $command->getUser();
         $betValue = $command->getBetValue();
 
-        //zabierz z portfeli betValue
+        $this->dispatcher->dispatch(
+            Events::MONEY_TAKE,
+            new TakeMoneyEvent($user, $betValue)
+        );
+
         //odwołać się do serwisu, który wylosuje nagrodę
         //dodać nagrodę do portfeli
         //uzupełnić wartość wagering w bonusowych portfelach
         //zwrócić wartość wygranej
 
         return 100;
-    }
-
-    /**
-     * @param UserInterface $user
-     * @param int           $betValue
-     */
-    private function takeMoney(UserInterface $user, int $betValue)
-    {
-        $this->realMoneyTakingHandler->setNext($this->bonusMoneyTakingHandler);
-        $this->realMoneyTakingHandler->handle($user, $betValue);
     }
 }
