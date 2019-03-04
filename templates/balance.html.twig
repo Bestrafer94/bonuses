@@ -1,6 +1,14 @@
 {% block body %}
     {% include 'base.html.twig' %}
 
-    <h1>Welcome in balance account view!</h1>
+    <div class="centered_form">
+        <h1>Balance:</h1>
+
+        <p>Total: {{ balance.total }}</p>
+        <p>Real money: {{ balance.realMoney }}</p>
+        {% for row in balance.bonuses %}
+            <p>{{ row['name'] }}: {{ row['value'] }}</p>
+        {% endfor %}
+    </div>
 
 {% endblock %}

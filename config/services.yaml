@@ -25,3 +25,7 @@ services:
     App\Handler\UserProfileCommandHandler:
         tags:
             - { name: tactician.handler, command: App\Handler\Command\UserProfileCommand }
+
+    App\Handler\BalanceCommandHandler:
+        tags:
+            - { name: tactician.handler, command: App\Handler\Command\BalanceCommand }

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Handler\Command\BalanceCommand;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,6 +18,12 @@ class BalanceController extends BaseController
      */
     public function balance(Request $request): Response
     {
-        return $this->render('balance.html.twig');
+        $command = new BalanceCommand($this->getUser());
+
+        return $this->render('balance.html.twig',
+            [
+                'balance' => $this->commandBus->handle($command),
+            ]
+        );
     }
 }
