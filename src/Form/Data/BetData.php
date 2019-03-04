@@ -12,7 +12,7 @@ class BetData
     /**
      * @return int
      */
-    public function getBetValue(): int
+    public function getBetValue(): ?int
     {
         return $this->betValue;
     }

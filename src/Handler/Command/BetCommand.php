@@ -2,15 +2,15 @@
 
 namespace App\Handler\Command;
 
+use App\Form\Data\BetData;
 use Symfony\Component\Security\Core\User\UserInterface;
-use App\Form\Data\DepositData;
 
-class DepositCommand
+class BetCommand
 {
     /**
-     * @var DepositData
+     * @var BetData
      */
-    private $depositData;
+    private $betData;
 
     /**
      * @var UserInterface
@@ -18,13 +18,13 @@ class DepositCommand
     private $user;
 
     /**
+     * @param BetData       $betData
      * @param UserInterface $user
-     * @param DepositData   $depositValue
      */
-    public function __construct(DepositData $depositData, UserInterface $user)
+    public function __construct(BetData $betData, UserInterface $user)
     {
+        $this->betData = $betData;
         $this->user = $user;
-        $this->depositData = $depositData;
     }
 
     /**
@@ -38,8 +38,8 @@ class DepositCommand
     /**
      * @return int
      */
-    public function getDepositValue(): int
+    public function getBetValue(): int
     {
-        return $this->depositData->getDepositValue();
+        return $this->betData->getBetValue();
     }
 }

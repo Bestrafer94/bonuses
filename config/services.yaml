@@ -17,3 +17,7 @@ services:
     App\Handler\DepositCommandHandler:
         tags:
             - { name: tactician.handler, command: App\Handler\Command\DepositCommand }
+
+    App\Handler\BetCommandHandler:
+        tags:
+            - { name: tactician.handler, command: App\Handler\Command\BetCommand }
