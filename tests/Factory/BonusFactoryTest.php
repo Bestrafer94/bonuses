@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\Factory;
+namespace App\Tests\Factory;
 
 use App\Entity\Bonus;
 use App\Factory\BonusFactory;

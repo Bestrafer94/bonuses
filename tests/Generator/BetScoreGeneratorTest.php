@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\Factory;
+namespace App\Tests\Generator;
 
 use App\Generator\BetScoreGenerator;
 use App\Generator\BetScoreGeneratorInterface;

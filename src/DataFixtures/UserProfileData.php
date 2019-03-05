@@ -49,6 +49,8 @@ class UserProfileData extends Fixture implements OrderedFixtureInterface
 
             $userProfile = $this->userProfileFactory->createUserProfile($createUserModel);
             $userProfile->setUser($users[$i]);
+
+            $this->setReference(sprintf('user-profile-%s', $i), $userProfile);
             $manager->persist($userProfile);
         }
 

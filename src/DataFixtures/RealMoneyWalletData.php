@@ -40,6 +40,7 @@ class RealMoneyWalletData extends Fixture implements OrderedFixtureInterface
         for ($i = 0; $i < UserData::NUMBER_OF_USERS; ++$i) {
             $realMoneyWallet = $this->walletFactory->createRealMoneyWallet();
             $realMoneyWallet->setUser($users[$i]);
+            $this->setReference(sprintf('real-money-wallet-%s', $i), $realMoneyWallet);
             $manager->persist($realMoneyWallet);
         }
 

@@ -35,7 +35,10 @@ class UserData extends Fixture implements OrderedFixtureInterface
                 ->setUserName(sprintf('user-%s', $i))
                 ->setPassword(sprintf('password-%s', $i));
 
-            $manager->persist($this->userFactory->createUser($createUserModel));
+            $user = $this->userFactory->createUser($createUserModel);
+            $this->setReference(sprintf('user-%s', $i), $user);
+
+            $manager->persist($user);
         }
 
         $manager->flush();

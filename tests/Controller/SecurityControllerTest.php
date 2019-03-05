@@ -1,15 +1,22 @@
 <?php
 
-namespace tests\Controller;
+namespace App\Tests\Controller;
 
-use Liip\FunctionalTestBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
-class SecurityControllerTest extends WebTestCase
+class SecurityControllerTest extends BaseWebTestCase
 {
     public function testLogin()
     {
         $client = $this->makeClient();
         $client->request('GET', '/login');
-        $this->assertStatusCode(200, $client);
+        $this->assertStatusCode(Response::HTTP_OK, $client);
+    }
+
+    public function testLogout()
+    {
+        $client = $this->makeClient();
+        $client->request('GET', '/logout');
+        $this->assertStatusCode(Response::HTTP_FOUND, $client);
     }
 }
