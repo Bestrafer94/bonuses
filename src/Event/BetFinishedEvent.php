@@ -15,11 +15,18 @@ class BetFinishedEvent extends Event
     private $user;
 
     /**
-     * @param User $user
+     * @var int
      */
-    public function __construct(User $user)
+    private $betValue;
+
+    /**
+     * @param User $user
+     * @param int  $betValue
+     */
+    public function __construct(User $user, int $betValue)
     {
         $this->user = $user;
+        $this->betValue = $betValue;
     }
 
     /**
@@ -28,5 +35,13 @@ class BetFinishedEvent extends Event
     public function getUser(): User
     {
         return $this->user;
+    }
+
+    /**
+     * @return int
+     */
+    public function getBetValue(): int
+    {
+        return $this->betValue;
     }
 }

@@ -58,7 +58,7 @@ class BetCommandHandler
 
         $this->dispatcher->dispatch(
             Events::BET_FINISHED,
-            new BetFinishedEvent($user)
+            new BetFinishedEvent($user, $betValue)
         );
 
         return $score;
