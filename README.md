@@ -4,6 +4,10 @@ LOCAL SETUP:
 - adjust parameters to your needs in `.env.dist` file or start with default configuration
 - `cp .env.dist .env`
 - `docker compose up -d --build`
+- `docker exec -it bonuses_php_1 bash`
+- `composer install`
+- `./bin/console doctrine:schema:update --force`
+- `./bin/console doctrine:fixtures:load`
 
 LOGIN TO ADMINER:
 - server: `mysql`
