@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Factory;
 
 use App\Entity\Bonus;
@@ -21,7 +23,7 @@ class BonusFactory implements BonusFactoryInterface
             ->setName(Bonus::DEPOSIT_BONUS_NAME)
             ->setEventTrigger(Bonus::DEPOSIT_TRIGGER)
             ->setMultiplier(rand(self::MULTIPLIER_MIN, self::MULTIPLIER_MAX))
-            ->setValueOfReward((mt_rand() / mt_getrandmax()) * $depositValue);
+            ->setValueOfReward((int) ((mt_rand() / mt_getrandmax()) * $depositValue));
     }
 
     /**
@@ -33,6 +35,6 @@ class BonusFactory implements BonusFactoryInterface
             ->setName(Bonus::LOGIN_BONUS_NAME)
             ->setEventTrigger(Bonus::LOGIN_TRIGGER)
             ->setMultiplier(rand(self::MULTIPLIER_MIN, self::MULTIPLIER_MAX))
-            ->setValueOfReward(rand(self::LOGIN_VALUE_OF_REWARD_MIN, self::LOGIN_VALUE_OF_REWARD_MAX));
+            ->setValueOfReward((int) rand(self::LOGIN_VALUE_OF_REWARD_MIN, self::LOGIN_VALUE_OF_REWARD_MAX));
     }
 }

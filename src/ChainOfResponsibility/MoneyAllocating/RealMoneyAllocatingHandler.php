@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\ChainOfResponsibility\MoneyAllocating;
 
 use App\Entity\User;
