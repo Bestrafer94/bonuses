@@ -12,7 +12,7 @@ class BonusMoneyAllocatingHandler extends MoneyAllocatingHandler
      */
     public function handle(User $user, int $depositValue)
     {
-        $wallets = $this->walletRepository->findBy(['user' => $user, 'isOrigin' => false]);
+        $wallets = $this->walletRepository->findBonusMoneyWalletsByUser($user);
         shuffle($wallets);
 
         /** @var Wallet $wallet */

@@ -5,20 +5,20 @@ namespace App\Subscriber;
 use App\Entity\Wallet;
 use App\Event\BetFinishedEvent;
 use App\Events;
-use App\Repository\WalletRepository;
+use App\Repository\WalletRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class BetFinishedSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var WalletRepository
+     * @var WalletRepositoryInterface
      */
     private $walletRepository;
 
     /**
-     * @param WalletRepository $walletRepository
+     * @param WalletRepositoryInterface $walletRepository
      */
-    public function __construct(WalletRepository $walletRepository)
+    public function __construct(WalletRepositoryInterface $walletRepository)
     {
         $this->walletRepository = $walletRepository;
     }
@@ -40,7 +40,7 @@ class BetFinishedSubscriber implements EventSubscriberInterface
     {
         $user = $betFinishedEvent->getUser();
 
-        $wallets = $this->walletRepository->findBy(['user' => $user, 'isOrigin' => false]);
+        $wallets = $this->walletRepository->findBonusMoneyWalletsByUser($user);
 
         /** @var Wallet $wallet */
         foreach ($wallets as $wallet) {
@@ -52,7 +52,7 @@ class BetFinishedSubscriber implements EventSubscriberInterface
 
             if ($wallet->getBonus()->getMultiplier() <= 0) {
                 /** @var Wallet $realMoneyWallet */
-                $realMoneyWallet = $this->walletRepository->findOneBy(['user' => $user, 'isOrigin' => true]);
+                $realMoneyWallet = $this->walletRepository->findActiveBonusMoneyWalletsByUser($user);
                 $realMoneyWallet->addMoney($wallet->getInitialValue());
                 $wallet->setStatus(Wallet::STATUS_DEPLETED);
             }

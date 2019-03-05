@@ -67,8 +67,8 @@ class BalanceResponseModelFactoryTest extends TestCase
         $realMoneyCurrentValue = 1000;
 
         $this->walletMock->method('getCurrentValue')->willReturn($realMoneyCurrentValue);
-        $this->walletRepositoryMock->method('findOneBy')->willReturn($this->walletMock);
-        $this->walletRepositoryMock->method('findBy')->willReturn($this->bonusWalletsMock);
+        $this->walletRepositoryMock->method('findRealMoneyWalletByUser')->willReturn($this->walletMock);
+        $this->walletRepositoryMock->method('findActiveBonusMoneyWalletsByUser')->willReturn($this->bonusWalletsMock);
 
         $response = $this->balanceResponseModelFactory->create($this->userMock);
 

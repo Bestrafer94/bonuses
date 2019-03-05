@@ -3,13 +3,13 @@
 namespace App\ChainOfResponsibility\MoneyTaking;
 
 use App\Entity\User;
-use App\Repository\WalletRepository;
+use App\Repository\WalletRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 abstract class MoneyTakingHandler implements MoneyTakingHandlerInterface
 {
     /**
-     * @var WalletRepository
+     * @var WalletRepositoryInterface
      */
     protected $walletRepository;
 
@@ -24,10 +24,10 @@ abstract class MoneyTakingHandler implements MoneyTakingHandlerInterface
     private $nextHandler;
 
     /**
-     * @param WalletRepository       $walletRepository
-     * @param EntityManagerInterface $entityManager
+     * @param WalletRepositoryInterface $walletRepository
+     * @param EntityManagerInterface    $entityManager
      */
-    public function __construct(WalletRepository $walletRepository, EntityManagerInterface $entityManager)
+    public function __construct(WalletRepositoryInterface $walletRepository, EntityManagerInterface $entityManager)
     {
         $this->walletRepository = $walletRepository;
         $this->entityManager = $entityManager;

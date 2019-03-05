@@ -5,7 +5,7 @@ namespace App\Factory;
 use App\Entity\User;
 use App\Entity\Wallet;
 use App\Model\Response\BalanceResponseModel;
-use App\Repository\WalletRepository;
+use App\Repository\WalletRepositoryInterface;
 
 class BalanceResponseModelFactory implements BalanceResponseModelFactoryInterface
 {
@@ -13,14 +13,14 @@ class BalanceResponseModelFactory implements BalanceResponseModelFactoryInterfac
     const VALUE_INDEX = 'value';
 
     /**
-     * @var WalletRepository
+     * @var WalletRepositoryInterface
      */
     private $walletRepository;
 
     /**
-     * @param WalletRepository $walletRepository
+     * @param WalletRepositoryInterface $walletRepository
      */
-    public function __construct(WalletRepository $walletRepository)
+    public function __construct(WalletRepositoryInterface $walletRepository)
     {
         $this->walletRepository = $walletRepository;
     }
@@ -31,15 +31,9 @@ class BalanceResponseModelFactory implements BalanceResponseModelFactoryInterfac
     public function create(User $user): BalanceResponseModel
     {
         /** @var Wallet $realMoneyWallet */
-        $realMoneyWallet = $this->walletRepository->findOneBy(['user' => $user, 'isOrigin' => true]);
+        $realMoneyWallet = $this->walletRepository->findRealMoneyWalletByUser($user);
         $realMoney = $realMoneyWallet->getCurrentValue();
-        $bonusWallets = $this->walletRepository->findBy(
-            [
-                'user' => $user,
-                'isOrigin' => false,
-                'status' => Wallet::STATUS_ACTIVE
-            ]
-        );
+        $bonusWallets = $this->walletRepository->findActiveBonusMoneyWalletsByUser($user);
         $total = 0;
         $bonuses = [];
 

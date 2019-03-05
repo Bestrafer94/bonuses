@@ -11,7 +11,7 @@ class RealMoneyAllocatingHandler extends MoneyAllocatingHandler
      */
     public function handle(User $user, int $depositValue)
     {
-        $wallet = $this->walletRepository->findOneBy(['user' => $user, 'isOrigin' => true]);
+        $wallet = $this->walletRepository->findRealMoneyWalletByUser($user);
         $wallet->addMoney($depositValue);
 
         $this->entityManager->persist($wallet);

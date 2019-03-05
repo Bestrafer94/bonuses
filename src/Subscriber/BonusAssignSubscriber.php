@@ -9,6 +9,7 @@ use App\Event\DepositBonusAssignEvent;
 use App\Events;
 use App\Factory\BonusFactoryInterface;
 use App\Factory\WalletFactoryInterface;
+use App\Repository\WalletRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
@@ -27,22 +28,30 @@ class BonusAssignSubscriber implements EventSubscriberInterface
     private $bonusFactory;
 
     /**
+     * @var WalletRepositoryInterface
+     */
+    private $walletRepository;
+
+    /**
      * @var EntityManagerInterface
      */
     private $entityManager;
 
     /**
-     * @param WalletFactoryInterface $walletFactory
-     * @param BonusFactoryInterface  $bonusFactory
-     * @param EntityManagerInterface $entityManager
+     * @param WalletFactoryInterface    $walletFactory
+     * @param BonusFactoryInterface     $bonusFactory
+     * @param WalletRepositoryInterface $walletRepository
+     * @param EntityManagerInterface    $entityManager
      */
     public function __construct(
         WalletFactoryInterface $walletFactory,
         BonusFactoryInterface $bonusFactory,
+        WalletRepositoryInterface $walletRepository,
         EntityManagerInterface $entityManager
     ) {
         $this->walletFactory = $walletFactory;
         $this->bonusFactory = $bonusFactory;
+        $this->walletRepository = $walletRepository;
         $this->entityManager = $entityManager;
     }
 
@@ -65,15 +74,13 @@ class BonusAssignSubscriber implements EventSubscriberInterface
         $user = $depositBonusAssignEvent->getUser();
         $depositValue = $depositBonusAssignEvent->getDepositValue();
 
-        $wallets = $this->entityManager->getRepository(Wallet::class)->findBy(['user' => $user, 'isOrigin' => false]);
+        $wallets = $this->walletRepository->findActiveBonusMoneyWalletsByUser($user);
 
         // @TODO implement rule and verify requirements
         $threshold = 0;
         /** @var Wallet $wallet */
         foreach ($wallets as $wallet) {
-            if (Wallet::STATUS_DEPLETED !== $wallet->getStatus()) {
-                $threshold += $wallet->getInitialValue() - $wallet->getCurrentValue();
-            }
+            $threshold += $wallet->getInitialValue() - $wallet->getCurrentValue();
         }
 
         if ($depositValue > $threshold) {
@@ -89,7 +96,7 @@ class BonusAssignSubscriber implements EventSubscriberInterface
         /** @var User $user */
         $user = $interactiveLoginEvent->getAuthenticationToken()->getUser();
 
-        $wallets = $this->entityManager->getRepository(Wallet::class)->findBy(['user' => $user, 'isOrigin' => false]);
+        $wallets = $this->walletRepository->findActiveBonusMoneyWalletsByUser($user);
         /** @var Wallet $bonusMoneyWallet */
         foreach ($wallets as $bonusMoneyWallet) {
             if (Bonus::LOGIN_TRIGGER === $bonusMoneyWallet->getBonus()->getEventTrigger()) {

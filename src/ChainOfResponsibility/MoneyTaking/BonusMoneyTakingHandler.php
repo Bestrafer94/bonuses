@@ -13,13 +13,7 @@ class BonusMoneyTakingHandler extends MoneyTakingHandler
      */
     public function handle(User $user, int $betValue)
     {
-        $wallets = $this->walletRepository->findBy(
-            [
-                'user' => $user,
-                'isOrigin' => false,
-                'status' => Wallet::STATUS_ACTIVE,
-            ]
-        );
+        $wallets = $this->walletRepository->findActiveBonusMoneyWalletsByUser($user);
         shuffle($wallets);
 
         /** @var Wallet $wallet */

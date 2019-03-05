@@ -13,7 +13,7 @@ class RealMoneyTakingHandler extends MoneyTakingHandler
     public function handle(User $user, int $betValue)
     {
         /** @var Wallet $wallet */
-        $wallet = $this->walletRepository->findOneBy(['user' => $user, 'isOrigin' => true]);
+        $wallet = $this->walletRepository->findRealMoneyWalletByUser($user);
 
         $balance = $wallet->getCurrentValue();
 
