@@ -72,7 +72,6 @@ class BonusMoneyAllocatingHandlerTest extends TestCase
     {
         $depositValue = 150;
 
-        $this->walletRepositoryMock->expects($this->once())->method('findBonusMoneyWalletsByUser');
         $this->entityManagerMock->expects($this->exactly(self::NUMBER_OF_BONUS_WALLETS))->method('persist');
         $this->entityManagerMock->expects($this->once())->method('flush');
 
@@ -83,7 +82,6 @@ class BonusMoneyAllocatingHandlerTest extends TestCase
     {
         $depositValue = 190;
 
-        $this->walletRepositoryMock->expects($this->once())->method('findBonusMoneyWalletsByUser');
         $this->entityManagerMock->expects($this->exactly(self::NUMBER_OF_BONUS_WALLETS))->method('persist');
         $this->entityManagerMock->expects($this->never())->method('flush');
 

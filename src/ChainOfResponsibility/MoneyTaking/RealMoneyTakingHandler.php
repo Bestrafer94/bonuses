@@ -29,7 +29,7 @@ class RealMoneyTakingHandler extends MoneyTakingHandler
 
         $this->entityManager->persist($wallet);
 
-        if (0 !== $betValue) {
+        if (0 < $betValue) {
             return parent::handle($user, $betValue);
         } else {
             $this->entityManager->flush();
