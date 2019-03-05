@@ -32,7 +32,7 @@ class BonusMoneyAllocatingHandler extends MoneyAllocatingHandler
             }
         }
 
-        if (0 !== $depositValue) {
+        if (0 < $depositValue) {
             parent::handle($user, $depositValue);
         } else {
             $this->entityManager->flush();
