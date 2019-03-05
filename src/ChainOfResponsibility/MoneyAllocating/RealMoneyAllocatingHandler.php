@@ -18,9 +18,5 @@ class RealMoneyAllocatingHandler extends MoneyAllocatingHandler
 
         $this->entityManager->persist($wallet);
         $this->entityManager->flush();
-
-        if (0 !== $depositValue) {
-            parent::handle($user, $depositValue);
-        }
     }
 }
