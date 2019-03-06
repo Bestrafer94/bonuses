@@ -12,8 +12,6 @@ class MultiplierUpdate implements WalletUpdatingInterface
     private $betValue;
 
     /**
-     * MultiplierUpdate constructor.
-     *
      * @param int $betValue
      */
     public function __construct(int $betValue)
