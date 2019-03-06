@@ -22,3 +22,7 @@ Launching php-cs-fixer:
 Launching tests:
 - `cp phpunit.xml.dist phpunit.xml`
 - `bin/phpunit --configuration phpunit.xml tests/ --stop-on-failure`
+
+Example credentials for testing:
+- username: `user-0`
+- password: `password-0`
