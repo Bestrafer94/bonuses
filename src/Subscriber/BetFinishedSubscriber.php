@@ -7,9 +7,13 @@ namespace App\Subscriber;
 use App\Entity\Wallet;
 use App\Event\BetFinishedEvent;
 use App\Events;
+use App\Pipeline\WalletUpdating\MoneyConversion;
+use App\Pipeline\WalletUpdating\MultiplierUpdate;
+use App\Pipeline\WalletUpdating\StatusUpdate;
 use App\Repository\WalletRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use League\Pipeline\Pipeline;
 
 class BetFinishedSubscriber implements EventSubscriberInterface
 {
@@ -55,39 +59,16 @@ class BetFinishedSubscriber implements EventSubscriberInterface
 
         /** @var Wallet $wallet */
         foreach ($wallets as $wallet) {
-            $bonus = $wallet->getBonus();
-            $bonus->setMultiplier(
-                $this->calculateMultiplierValue($bonus->getMultiplier(), $betValue, $wallet->getInitialValue())
-            );
+            $pipeLine = (new Pipeline())
+                ->pipe(new MultiplierUpdate($betValue))
+                ->pipe(new StatusUpdate())
+                ->pipe(new MoneyConversion($this->walletRepository, $user));
 
-            if (Wallet::STATUS_WAGERED === $wallet->getStatus() && 0 === $wallet->getCurrentValue()) {
-                $wallet->setStatus(Wallet::STATUS_DEPLETED);
-            } elseif (Wallet::STATUS_WAGERED === $wallet->getStatus() && 0 !== $wallet->getCurrentValue()) {
-                $wallet->setStatus(Wallet::STATUS_ACTIVE);
-            }
-
-            if ($wallet->getBonus()->getMultiplier() <= 0) {
-                /** @var Wallet $realMoneyWallet */
-                $realMoneyWallet = $this->walletRepository->findRealMoneyWalletByUser($user);
-                $realMoneyWallet->addMoney($wallet->getInitialValue());
-                $wallet->setStatus(Wallet::STATUS_DEPLETED);
-            }
+            $wallet = $pipeLine->process($wallet);
 
             $this->entityManager->persist($wallet);
         }
 
         $this->entityManager->flush();
-    }
-
-    /**
-     * @param int $oldMultiplier
-     * @param int $betValue
-     * @param int $initialValue
-     *
-     * @return int
-     */
-    private function calculateMultiplierValue(int $oldMultiplier, int $betValue, int $initialValue): int
-    {
-        return (int) ($oldMultiplier - round($betValue / $initialValue));
     }
 }

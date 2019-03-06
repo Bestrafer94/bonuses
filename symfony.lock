@@ -135,6 +135,9 @@
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
+    "league/pipeline": {
+        "version": "1.0.0"
+    },
     "league/tactician": {
         "version": "v1.0.3"
     },
