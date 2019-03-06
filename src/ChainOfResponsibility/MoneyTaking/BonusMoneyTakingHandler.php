@@ -38,7 +38,7 @@ class BonusMoneyTakingHandler extends MoneyTakingHandler
             }
         }
 
-        if (0 !== $betValue) {
+        if (0 < $betValue) {
             throw new NotEnoughMoneyException();
         } else {
             $this->entityManager->flush();

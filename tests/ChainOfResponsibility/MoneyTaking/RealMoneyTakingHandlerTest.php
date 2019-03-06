@@ -56,7 +56,7 @@ class RealMoneyTakingHandlerTest extends TestCase
 
     public function testHandleForCurrentValueGreaterOrEqualBetValue()
     {
-        $depositValue = 1000;
+        $betValue = 1000;
         $currentValue = 1500;
 
         $this->walletRepositoryMock
@@ -65,16 +65,16 @@ class RealMoneyTakingHandlerTest extends TestCase
             ->willReturn($this->walletMock);
         $this->walletMock->method('getCurrentValue')->willReturn($currentValue);
 
-        $this->walletMock->expects($this->once())->method('takeMoney')->with($depositValue);
+        $this->walletMock->expects($this->once())->method('takeMoney')->with($betValue);
         $this->entityManagerMock->expects($this->once())->method('persist')->with($this->walletMock);
         $this->entityManagerMock->expects($this->once())->method('flush');
 
-        $this->realMoneyTakingHandler->handle($this->userMock, $depositValue);
+        $this->realMoneyTakingHandler->handle($this->userMock, $betValue);
     }
 
     public function testHandleForCurrentValueLessThanBetValue()
     {
-        $depositValue = 1000;
+        $betValue = 1000;
         $currentValue = 800;
 
         $this->walletRepositoryMock
@@ -87,6 +87,6 @@ class RealMoneyTakingHandlerTest extends TestCase
         $this->entityManagerMock->expects($this->once())->method('persist')->with($this->walletMock);
         $this->entityManagerMock->expects($this->never())->method('flush');
 
-        $this->realMoneyTakingHandler->handle($this->userMock, $depositValue);
+        $this->realMoneyTakingHandler->handle($this->userMock, $betValue);
     }
 }
