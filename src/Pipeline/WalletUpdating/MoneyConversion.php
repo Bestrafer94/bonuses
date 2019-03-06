@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Pipeline\WalletUpdating;
 
 use App\Entity\User;
