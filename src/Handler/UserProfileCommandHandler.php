@@ -6,19 +6,19 @@ namespace App\Handler;
 
 use App\Entity\UserProfile;
 use App\Handler\Command\UserProfileCommand;
-use App\Repository\UserProfileRepository;
+use App\Repository\UserProfileRepositoryInterface;
 
 class UserProfileCommandHandler
 {
     /**
-     * @var UserProfileRepository
+     * @var UserProfileRepositoryInterface
      */
     private $userProfileRepository;
 
     /**
-     * @param UserProfileRepository $userProfileRepository
+     * @param UserProfileRepositoryInterface $userProfileRepository
      */
-    public function __construct(UserProfileRepository $userProfileRepository)
+    public function __construct(UserProfileRepositoryInterface $userProfileRepository)
     {
         $this->userProfileRepository = $userProfileRepository;
     }
@@ -30,6 +30,6 @@ class UserProfileCommandHandler
      */
     public function handle(UserProfileCommand $command): ?UserProfile
     {
-        return $this->userProfileRepository->findOneBy(['user' => $command->getUser()]);
+        return $this->userProfileRepository->findOneByUser($command->getUser());
     }
 }
