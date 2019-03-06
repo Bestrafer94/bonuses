@@ -4,7 +4,7 @@ namespace App\Pipeline\WalletUpdating;
 
 use App\Entity\Wallet;
 
-class MultiplierUpdate
+class MultiplierUpdate implements WalletUpdatingInterface
 {
     /**
      * @var int
@@ -22,9 +22,7 @@ class MultiplierUpdate
     }
 
     /**
-     * @param Wallet $wallet
-     *
-     * @return Wallet
+     * {@inheritdoc}
      */
     public function __invoke(Wallet $wallet): Wallet
     {

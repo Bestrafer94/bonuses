@@ -6,7 +6,7 @@ use App\Entity\User;
 use App\Entity\Wallet;
 use App\Repository\WalletRepositoryInterface;
 
-class MoneyConversion
+class MoneyConversion implements WalletUpdatingInterface
 {
     /**
      * @var WalletRepositoryInterface
@@ -29,9 +29,7 @@ class MoneyConversion
     }
 
     /**
-     * @param Wallet $wallet
-     *
-     * @return Wallet
+     * {@inheritdoc}
      */
     public function __invoke(Wallet $wallet): Wallet
     {

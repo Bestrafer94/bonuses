@@ -4,12 +4,10 @@ namespace App\Pipeline\WalletUpdating;
 
 use App\Entity\Wallet;
 
-class StatusUpdate
+class StatusUpdate implements WalletUpdatingInterface
 {
     /**
-     * @param Wallet $wallet
-     *
-     * @return Wallet
+     * {@inheritdoc}
      */
     public function __invoke(Wallet $wallet): Wallet
     {
