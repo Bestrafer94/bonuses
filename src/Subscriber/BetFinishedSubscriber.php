@@ -7,13 +7,10 @@ namespace App\Subscriber;
 use App\Entity\Wallet;
 use App\Event\BetFinishedEvent;
 use App\Events;
-use App\Pipeline\WalletUpdating\MoneyConversion;
-use App\Pipeline\WalletUpdating\MultiplierUpdate;
-use App\Pipeline\WalletUpdating\StatusUpdate;
+use App\Factory\WalletUpdatingPipelineFactoryInterface;
 use App\Repository\WalletRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use League\Pipeline\Pipeline;
 
 class BetFinishedSubscriber implements EventSubscriberInterface
 {
@@ -28,13 +25,23 @@ class BetFinishedSubscriber implements EventSubscriberInterface
     private $entityManager;
 
     /**
-     * @param WalletRepositoryInterface $walletRepository
-     * @param EntityManagerInterface    $entityManager
+     * @var WalletUpdatingPipelineFactoryInterface
      */
-    public function __construct(WalletRepositoryInterface $walletRepository, EntityManagerInterface $entityManager)
-    {
+    private $walletUpdatingPipelineFactory;
+
+    /**
+     * @param WalletRepositoryInterface              $walletRepository
+     * @param EntityManagerInterface                 $entityManager
+     * @param WalletUpdatingPipelineFactoryInterface $walletUpdatingPipelineFactory
+     */
+    public function __construct(
+        WalletRepositoryInterface $walletRepository,
+        EntityManagerInterface $entityManager,
+        WalletUpdatingPipelineFactoryInterface $walletUpdatingPipelineFactory
+    ) {
         $this->walletRepository = $walletRepository;
         $this->entityManager = $entityManager;
+        $this->walletUpdatingPipelineFactory = $walletUpdatingPipelineFactory;
     }
 
     /**
@@ -56,14 +63,10 @@ class BetFinishedSubscriber implements EventSubscriberInterface
         $betValue = $betFinishedEvent->getBetValue();
 
         $wallets = $this->walletRepository->findBonusMoneyWalletsByUser($user);
+        $pipeLine = $this->walletUpdatingPipelineFactory->create($user, $betValue);
 
         /** @var Wallet $wallet */
         foreach ($wallets as $wallet) {
-            $pipeLine = (new Pipeline())
-                ->pipe(new MultiplierUpdate($betValue))
-                ->pipe(new StatusUpdate())
-                ->pipe(new MoneyConversion($this->walletRepository, $user));
-
             $wallet = $pipeLine->process($wallet);
 
             $this->entityManager->persist($wallet);
