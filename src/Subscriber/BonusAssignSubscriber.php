@@ -76,16 +76,7 @@ class BonusAssignSubscriber implements EventSubscriberInterface
         $user = $depositBonusAssignEvent->getUser();
         $depositValue = $depositBonusAssignEvent->getDepositValue();
 
-        $wallets = $this->walletRepository->findActiveBonusMoneyWalletsByUser($user);
-
-        // @TODO implement rule and verify requirements
-        $threshold = 0;
-        /** @var Wallet $wallet */
-        foreach ($wallets as $wallet) {
-            $threshold += $wallet->getInitialValue() - $wallet->getCurrentValue();
-        }
-
-        if ($depositValue > $threshold) {
+        if ($depositValue > $this->calculateThreshold($user)) {
             $this->handleBonus($user, $this->bonusFactory->createDepositBonus($depositValue));
         }
     }
@@ -98,9 +89,8 @@ class BonusAssignSubscriber implements EventSubscriberInterface
         /** @var User $user */
         $user = $interactiveLoginEvent->getAuthenticationToken()->getUser();
 
-        $wallets = $this->walletRepository->findActiveBonusMoneyWalletsByUser($user);
         /** @var Wallet $bonusMoneyWallet */
-        foreach ($wallets as $bonusMoneyWallet) {
+        foreach ($this->walletRepository->findActiveBonusMoneyWalletsByUser($user) as $bonusMoneyWallet) {
             if (Bonus::LOGIN_TRIGGER === $bonusMoneyWallet->getBonus()->getEventTrigger()) {
                 return;
             }
@@ -120,5 +110,23 @@ class BonusAssignSubscriber implements EventSubscriberInterface
         $wallet->setUser($user);
         $this->entityManager->persist($wallet);
         $this->entityManager->flush();
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return int
+     */
+    private function calculateThreshold(User $user): int
+    {
+        $wallets = $this->walletRepository->findActiveBonusMoneyWalletsByUser($user);
+
+        $threshold = 0;
+        /** @var Wallet $wallet */
+        foreach ($wallets as $wallet) {
+            $threshold += $wallet->getInitialValue() - $wallet->getCurrentValue();
+        }
+
+        return $threshold;
     }
 }
