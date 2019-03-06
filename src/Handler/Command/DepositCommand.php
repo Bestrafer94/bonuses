@@ -20,8 +20,8 @@ class DepositCommand
     private $user;
 
     /**
+     * @param DepositData   $depositData
      * @param UserInterface $user
-     * @param DepositData   $depositValue
      */
     public function __construct(DepositData $depositData, UserInterface $user)
     {
