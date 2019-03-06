@@ -107,10 +107,7 @@ class BonusAssignSubscriber implements EventSubscriberInterface
         }
 
         $bonus = $this->bonusFactory->createLoginBonus();
-        $wallet = $this->walletFactory->createBonusMoneyWallet($bonus);
-        $wallet->setUser($user);
-        $this->entityManager->persist($wallet);
-        $this->entityManager->flush();
+        $this->handleBonus($user, $bonus);
     }
 
     /**
